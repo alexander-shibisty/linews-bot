@@ -1,8 +1,6 @@
-modules/
-tests/
-tasks/
-helpers/
-tests/
+/tests/
+/tasks/
+/helpers/
 app.js
 default.json
 node_modules
