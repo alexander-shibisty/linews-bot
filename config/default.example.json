@@ -1,0 +1,12 @@
+{
+	"database": {
+        "statuses_table": "statuses"
+	},
+	"common": {
+		"vk_token": "mytoken",
+		"group_id": "mygroup_id"
+	},
+	"backend": {
+		"port": 9999
+	}
+}
