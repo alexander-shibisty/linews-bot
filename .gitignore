@@ -7,3 +7,4 @@ app.js
 default.json
 node_modules
 status.db
+*.log
