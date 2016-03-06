@@ -1,8 +1,9 @@
 /tests/
 /tasks/
 /helpers/
+/images/
 app.js
 default.json
 node_modules
-status.db
+*.db
 *.log

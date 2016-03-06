@@ -17,7 +17,6 @@ module.exports = (req, res) ->
 
 				$ = require("jquery")(window)
 				post = ""
-				images = ""
 
 				$("#tab_specials_content").children("div").each(
 					(index, element) ->
@@ -30,13 +29,6 @@ module.exports = (req, res) ->
 						if title && link && count && discount
 							post += "Скидка #{discount} на #{title}, покупка обойдется в #{count}\n#{link}\n\n"
 				)
-
-				# $("#spotlight_scroll").children("div").each(
-				# 	(index, element) ->
-				# 		image = $(element).find(".spotlight_img a img").attr("src")
-				#
-				# 		images = "#{image},"
-				# )
 
 				if post
 					start = "Сегодня в Steam:\n\n"
