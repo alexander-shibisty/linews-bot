@@ -21,20 +21,21 @@ module.exports = (image, done) ->
 					(response) ->
 						response.pipe file
 
-						down_url = "https://api.vk.com/method/photos.getUploadServer?"
-						down_url += "group_id=#{config.common.group_id}"
-						down_url += "&album_id=#{config.common.linews_thumbnail_id}"
-						down_url += "&access_token=#{config.common.vk_token}"
+						upd_url = "https://api.vk.com/method/photos.getUploadServer?"
+						upd_url += "group_id=#{config.common.group_id}"
+						upd_url += "&album_id=#{config.common.linews_thumbnail_id}"
+						upd_url += "&access_token=#{config.common.vk_token}"
 
-						callback null, newName, down_url
-				)
-			(newName, down_url, callback) ->
-				request(
-					down_url
-					(err, head, body) ->
-						body = JSON.parse body
+						request(
+							upd_url
+							(err, head, body) ->
+								if err
+									toLog "Error in ImageUploader: #{err}"
+									return callback err, []
 
-						callback null, newName, body
+								body = JSON.parse body
+								callback null, newName, body
+						)
 				)
 			(newName, body, callback) ->
 				rest.post(
@@ -67,6 +68,9 @@ module.exports = (image, done) ->
 				)
 		]
 		(err, result) ->
+			if err
+				return toLog "Error in ImageUploader: #{err}"
+
 			done result
 	)
 
