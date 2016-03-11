@@ -65,7 +65,7 @@ module.exports = (req, res) ->
 										else if !error
 											callback "Ошибка запроса, #{error}", null
 										else
-											callback "Вероятно пост уже был, #{error}", null
+											callback "Вероятно, пост уже был", null
 								)
 						]
 						(error, result) ->
