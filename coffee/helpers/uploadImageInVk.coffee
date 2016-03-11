@@ -10,6 +10,8 @@ log = require "../helpers/logs"
 toLog   = (data) -> log.writeTo "../logs/status.log", data
 
 module.exports = (image, done) ->
+	if !image then return done null
+
 	async.waterfall(
 		[
 			(callback) ->

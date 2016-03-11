@@ -37,7 +37,10 @@ module.exports = (req, res) ->
 						#text = $($("#spotlight_scroll").find(".spotlight_content .spotlight_body[class!='price']")[0]).text()
 						link = $("#spotlight_scroll").children("div").find(".spotlight_img a").attr("href")
 
-						callback null, image, discount, count, link
+						if image && discount && count && link
+							callback null, image, discount, count, link
+						else
+							callback 'Недостаточно данных', '', '', '', ''
 				)
 			(image, discount, count, link, callback) ->
 				uploadImageInVk(
@@ -51,14 +54,14 @@ module.exports = (req, res) ->
 						#response.push text
 						response.push link
 
-						callback null, response
+						callback (result.response[0].pid ? null : 'Не удалось загрузить картинку'), response
 				)
 		]
 		(err, result) ->
 			if err
-				toLog "Error in last async method: #{err}"
+				return toLog "Error in last async method: #{err}"
 
-			str = encodeURIComponent "Акция на выходных в Steam.\n Скидка #{result[1]}, покупка обойдется в #{result[2]}."
+			str = encodeURIComponent "Акция на выходных в Steam.\n Скидка #{result[1]}, покупка обойдется в #{result[2]}"
 			last_url = "https://api.vk.com/method/wall.post?"
 			last_url += "owner_id=-#{config.common.group_id}"
 			last_url += "&attachments=#{result[0]},#{result[3]}"
@@ -66,13 +69,13 @@ module.exports = (req, res) ->
 			last_url += "&from_group=1"
 			last_url += "&access_token=#{config.common.vk_token}"
 
-			# request(
-			# 	last_url
-			# 	(err, head, body) ->
-			# 		if err then toLog err
-			#
-			# 		toLog body
-			# )
+			request(
+				last_url
+				(err, head, body) ->
+					if err then toLog err
+
+					toLog body
+			)
 	)
 
 	do res.end
