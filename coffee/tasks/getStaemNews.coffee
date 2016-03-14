@@ -3,7 +3,7 @@ config = require "config"
 log = require "../helpers/logs"
 async = require "async"
 
-uploadImageInVk = require "../helpers/uploadImageInVk"
+uploadImagesInVk = require "../helpers/uploadImagesInVk"
 
 toLog   = (data) -> log.writeTo "../logs/steam.log", data
 
@@ -31,44 +31,73 @@ module.exports = (req, res) ->
 						if errors then toLog "Error in HTML Parser: #{errors}"
 
 						$ = require("jquery")(window)
-						image = $("#spotlight_scroll").children("div").find(".spotlight_img a img").attr("src")
-						discount = $($("#spotlight_scroll").find(".spotlight_content .discount_pct")[0]).text()
-						count = $($("#spotlight_scroll").find(".spotlight_content .discount_final_price")[0]).text()
-						#text = $($("#spotlight_scroll").find(".spotlight_content .spotlight_body[class!='price']")[0]).text()
-						link = $("#spotlight_scroll").children("div").find(".spotlight_img a").attr("href")
+						images = $("#spotlight_scroll").children("div").find(".spotlight_img a img")
+						result = []
 
-						if image && discount && count && link
-							callback null, image, discount, count, link
+						for image in images
+							discount = $(image).parents(".home_area_spotlight").find(".spotlight_content .discount_pct").text()
+							count    = $(image).parents(".home_area_spotlight").find(".spotlight_content .discount_final_price").text()
+							link     = $(image).parents(".home_area_spotlight").find(".spotlight_img a").attr("href")
+
+							if link
+								result.push
+									image    : $(image).attr 'src'
+									discount : discount ? discount : null
+									count	 : count    ? count    : null
+									link	 : link
+
+						if result.length
+							callback null, result
 						else
-							callback 'Недостаточно данных', '', '', '', ''
+							callback 'Недостаточно данных', []
 				)
-			(image, discount, count, link, callback) ->
-				uploadImageInVk(
-					image,
-					(result) ->
-						response = []
+			(result, callback) ->
+				images = []
 
-						response.push "photo-#{config.common.group_id}_#{result.response[0].pid}"
-						response.push discount
-						response.push count
-						#response.push text
-						response.push link
+				for item in result
+					images.push item.image
 
-						if result.response[0].pid
-							callback null, response
+				uploadImagesInVk(
+					images,
+					(downDone) ->
+
+						if downDone.response.length
+							count = 0
+
+							for imageItem in downDone.response
+								result[ count ].image = "photo-#{config.common.group_id}_#{imageItem.pid}"
+								count++
+
+							callback null, result
 						else
-							callback 'Не удалось загрузить картинку', []
+							callback 'Не удалось загрузить картинки', []
 				)
 		]
 		(error, result) ->
 			if error
 				return toLog "Error in last async method: #{error}"
 
-			str = encodeURIComponent "Акция на выходных в Steam.\n Скидка #{result[1]}, покупка обойдется в #{result[2]}"
-			last_url = "https://api.vk.com/method/wall.post?"
-			last_url += "owner_id=-#{config.common.group_id}"
-			last_url += "&attachments=#{result[0]},#{result[3]}"
-			last_url += "&message=#{str}"
+			post = "Сейчас в Steam:\n"
+			attachments = ""
+			count = 1
+
+			for item in result
+				attachments += "#{item.image},"
+
+				post += "#{count++}. Акция на выходных в Steam.\n"
+
+				if item.discount
+					post += "Скидка #{item.discount}"
+					post += ", покупка обойдется в #{item.count}\n"
+
+				post += "Получить можно по ссылке: #{item.link}\n\n"
+
+			post = encodeURIComponent post
+
+			last_url = "https://api.vk.com/method/wall.post"
+			last_url += "?owner_id=-#{config.common.group_id}"
+			last_url += "&attachments=#{attachments}https://steampowered.com/"
+			last_url += "&message=#{post}"
 			last_url += "&from_group=1"
 			last_url += "&access_token=#{config.common.vk_token}"
 

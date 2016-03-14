@@ -27,7 +27,7 @@ module.exports = (image, done) ->
 						upd_url += "group_id=#{config.common.group_id}"
 						upd_url += "&album_id=#{config.common.linews_thumbnail_id}"
 						upd_url += "&access_token=#{config.common.vk_token}"
-
+						
 						request(
 							upd_url
 							(err, head, body) ->
