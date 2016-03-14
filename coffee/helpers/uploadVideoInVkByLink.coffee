@@ -16,6 +16,15 @@ module.exports = (video, done) ->
 	request(
 		save_url
 		(err, head, body) ->
+			if err
+				return done
+					error: err
+
+			if !body
+				return done
+					error: "Отсутствуют данные."
+
+
 			json = JSON.parse body
 
 			request json.response.upload_url, (err, head, body) -> done json

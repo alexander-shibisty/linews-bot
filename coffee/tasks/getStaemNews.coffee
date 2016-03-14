@@ -5,7 +5,7 @@ async = require "async"
 
 uploadImageInVk = require "../helpers/uploadImageInVk"
 
-toLog   = (data) -> log.writeTo "../logs/status.log", data
+toLog   = (data) -> log.writeTo "../logs/steam.log", data
 
 module.exports = (req, res) ->
 	async.waterfall(
@@ -54,12 +54,15 @@ module.exports = (req, res) ->
 						#response.push text
 						response.push link
 
-						callback (result.response[0].pid ? null : 'Не удалось загрузить картинку'), response
+						if result.response[0].pid
+							callback null, response
+						else
+							callback 'Не удалось загрузить картинку', []
 				)
 		]
-		(err, result) ->
-			if err
-				return toLog "Error in last async method: #{err}"
+		(error, result) ->
+			if error
+				return toLog "Error in last async method: #{error}"
 
 			str = encodeURIComponent "Акция на выходных в Steam.\n Скидка #{result[1]}, покупка обойдется в #{result[2]}"
 			last_url = "https://api.vk.com/method/wall.post?"
@@ -72,7 +75,7 @@ module.exports = (req, res) ->
 			request(
 				last_url
 				(err, head, body) ->
-					if err then toLog err
+					if err then toLog "Error in last request: #{err}"
 
 					toLog body
 			)
