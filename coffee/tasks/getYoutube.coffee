@@ -99,6 +99,7 @@ module.exports = (req, res) ->
 								)
 
 								str = "#{item['name']}\n #lnGames"
+								str = encodeURIComponent str
 								last_url = "https://api.vk.com/method/wall.post"
 								last_url += "?access_token=#{config.common.vk_token}"
 								last_url += "&owner_id=-#{config.common.group_id}"
