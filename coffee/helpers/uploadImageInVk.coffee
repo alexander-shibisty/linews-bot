@@ -1,11 +1,11 @@
 request = require "request"
-config = require "config"
-rest = require "restler"
-fs = require "fs"
-http = require "http"
-sha1 = require "sha1"
-async = require "async"
-log = require "../helpers/logs"
+config  = require "config"
+rest  	= require "restler"
+fs    	= require "fs"
+http  	= require "http"
+sha1  	= require "sha1"
+async 	= require "async"
+log   	= require "../helpers/logs"
 
 toLog   = (data) -> log.writeTo "../logs/status.log", data
 
@@ -17,13 +17,13 @@ module.exports = (image, done) ->
 			(callback) ->
 				newName = sha1 image
 				newName = "#{newName}.jpg"
-				file = fs.createWriteStream("#{__dirname}/../images/#{newName}")
+				file    = fs.createWriteStream "#{__dirname}/../images/#{newName}"
 
 				downloadImage = http.get(image
 					(response) ->
 						response.pipe file
 
-						upd_url = "https://api.vk.com/method/photos.getUploadServer"
+						upd_url  = "https://api.vk.com/method/photos.getUploadServer"
 						upd_url += "?group_id=#{config.common.group_id}"
 						upd_url += "&album_id=#{config.common.linews_thumbnail_id}"
 						upd_url += "&access_token=#{config.common.vk_token}"
@@ -40,20 +40,31 @@ module.exports = (image, done) ->
 						)
 				)
 			(newName, body, callback) ->
-				rest.post(
-					body.response.upload_url
-					multipart: true
-					data:
-						'file1': rest.file("#{__dirname}/../images/#{newName}", null, fs.statSync("#{__dirname}/../images/#{newName}").size, null, "image/jpg")
-				).on(
-					'complete',
-					(data) ->
-						callback null, data
-				)
+				if body.response.upload_url
+					imagePath = "#{__dirname}/../images/#{newName}"
+					rest.post(
+						body.response.upload_url
+						multipart: true
+						data:
+							'file1':
+								rest.file(
+									imagePath
+									null
+									fs.statSync(imagePath).size
+									null
+									"image/jpg"
+								)
+					).on(
+						'complete',
+						(data) ->
+							callback null, data
+					)
+				else
+					callback "Что-то пошло не так: #{body}."
 			(data, callback) ->
 				data = JSON.parse data
 
-				save_url =  "https://api.vk.com/method/photos.save"
+				save_url  =  "https://api.vk.com/method/photos.save"
 				save_url += "?access_token=#{config.common.vk_token}"
 				save_url += "&album_id=#{config.common.linews_thumbnail_id}"
 				save_url += "&group_id=#{config.common.group_id}"

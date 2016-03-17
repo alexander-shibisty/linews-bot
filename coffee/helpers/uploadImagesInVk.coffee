@@ -1,11 +1,11 @@
 request = require "request"
-config = require "config"
-rest = require "restler"
-fs = require "fs"
-http = require "http"
-sha1 = require "sha1"
-async = require "async"
-log = require "../helpers/logs"
+config  = require "config"
+rest    = require "restler"
+fs      = require "fs"
+http    = require "http"
+sha1    = require "sha1"
+async   = require "async"
+log     = require "../helpers/logs"
 
 toLog   = (data) -> log.writeTo "../logs/status.log", data
 
@@ -15,19 +15,19 @@ module.exports = (images, done) ->
 	async.waterfall(
 		[
 			(callback) ->
-				dowFuncs = []
-				global =
-					count: 0
-					images: []
-					newNames: []
+				dowFuncs =     []
+				global   =
+					count    : 0
+					images   : []
+					newNames : []
 
 				count = 0
 				for image in images
 					if count <= 4
 						newName = sha1 image
 						newName = "#{newName}.jpg"
-						global.images.push(image)
-						global.newNames.push(newName)
+						global.images.push   image
+						global.newNames.push newName
 
 						if(count == 0)
 							dowFuncs.push(
@@ -36,13 +36,13 @@ module.exports = (images, done) ->
 
 									if !fs.existsSync path
 										file = fs.createWriteStream path
-										downloadImage = http.get(global.images[global.count]
+										downloadImage = http.get(
+											global.images[global.count]
 											(response) ->
 												response.pipe file
 										)
 
 									global.count++
-
 									callback null, true
 							)
 						else
@@ -52,13 +52,13 @@ module.exports = (images, done) ->
 
 									if !fs.existsSync path
 										file = fs.createWriteStream path
-										downloadImage = http.get(global.images[global.count]
+										downloadImage = http.get(
+											global.images[global.count]
 											(response) ->
 												response.pipe file
 										)
 
 									global.count++
-
 									callback null, true
 							)
 
@@ -67,7 +67,7 @@ module.exports = (images, done) ->
 				async.waterfall(
 					dowFuncs
 					(error, result) ->
-						upd_url = "https://api.vk.com/method/photos.getUploadServer"
+						upd_url  = "https://api.vk.com/method/photos.getUploadServer"
 						upd_url += "?group_id=#{config.common.group_id}"
 						upd_url += "&album_id=#{config.common.linews_thumbnail_id}"
 						upd_url += "&access_token=#{config.common.vk_token}"
@@ -89,22 +89,33 @@ module.exports = (images, done) ->
 				count = 1
 
 				for image in images
-					files["file#{count}"] = rest.file("#{__dirname}/../images/#{image}", null, fs.statSync("#{__dirname}/../images/#{image}").size, null, "image/jpg")
+					imagePath = "#{__dirname}/../images/#{image}"
+					files["file#{count}"] =
+						rest.file(
+							imagePath
+							null
+							fs.statSync( imagePath ).size
+							null
+							"image/jpg"
+						)
 					count++
 
-				rest.post(
-					body.response.upload_url
-					multipart: true
-					data: files
-				).on(
-					'complete',
-					(data) ->
-						callback null, data
-				)
+				if body.response.upload_url
+					rest.post(
+						body.response.upload_url
+						multipart: true
+						data: files
+					).on(
+						'complete',
+						(data) ->
+							callback null, data
+					)
+				else
+					callback "Что-то пошло не так: #{data}.", []
 			(data, callback) ->
 				data = JSON.parse data
 
-				save_url =  "https://api.vk.com/method/photos.save"
+				save_url  =  "https://api.vk.com/method/photos.save"
 				save_url += "?access_token=#{config.common.vk_token}"
 				save_url += "&album_id=#{config.common.linews_thumbnail_id}"
 				save_url += "&group_id=#{config.common.group_id}"

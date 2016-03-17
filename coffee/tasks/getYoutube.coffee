@@ -23,7 +23,7 @@ module.exports = (req, res) ->
 					async.waterfall(
 						[
 							(callback) ->
-								url = "https://www.googleapis.com/youtube/v3/search"
+								url  = "https://www.googleapis.com/youtube/v3/search"
 								url += "?key=#{config.common.yt_apikey}"
 								url += "&channelId=#{row.link}"
 								url += "&part=snippet,id&order=date"
@@ -89,7 +89,7 @@ module.exports = (req, res) ->
 								item = result[0]
 								data = result[1]
 
-								ins_query = "INSERT INTO #{config.database.youtube_published_table} (date, link) "
+								ins_query  = "INSERT INTO #{config.database.youtube_published_table} (date, link) "
 								ins_query += "VALUES($date, $link)"
 
 								db.run(
@@ -100,7 +100,7 @@ module.exports = (req, res) ->
 
 								str = "#{item['name']}\n #lnGames"
 								str = encodeURIComponent str
-								last_url = "https://api.vk.com/method/wall.post"
+								last_url  = "https://api.vk.com/method/wall.post"
 								last_url += "?access_token=#{config.common.vk_token}"
 								last_url += "&owner_id=-#{config.common.group_id}"
 								last_url += "&attachments=video#{data.response.owner_id}_#{data.response.vid}"

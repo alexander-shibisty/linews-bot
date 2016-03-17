@@ -1,10 +1,10 @@
 request = require "request"
-config = require "config"
-async = require "async"
-log = require "../helpers/logs"
+config  = require "config"
+async   = require "async"
+log     = require "../helpers/logs"
 
 module.exports = (video, done) ->
-	save_url = "https://api.vk.com/method/video.save"
+	save_url  = "https://api.vk.com/method/video.save"
 	save_url += "?access_token=#{config.common.vk_token}"
 	save_url += "&name=#{video['name']}"
 	save_url += "&wallpost=0"
@@ -27,5 +27,8 @@ module.exports = (video, done) ->
 
 			json = JSON.parse body
 
-			request json.response.upload_url, (err, head, body) -> done json
+			if json.response.upload_url
+				request json.response.upload_url, (err, head, body) -> done json
+			else
+				done json
 	)
