@@ -3,14 +3,20 @@ config  = require "config"
 rest  	= require "restler"
 fs    	= require "fs"
 http  	= require "http"
+https  	= require "https"
 sha1  	= require "sha1"
 async 	= require "async"
 log   	= require "../helpers/logs"
 
 toLog   = (data) -> log.writeTo "../logs/status.log", data
 
-module.exports = (image, done) ->
-	if !image then return done null
+module.exports = (image, params, done) ->
+	if !image
+		return done "Переданы не все аргументы", null
+	if !params
+		return done "Переданы не все аргументы", null
+	if !done
+		return done "Переданы не все аргументы", null
 
 	async.waterfall(
 		[
@@ -19,26 +25,53 @@ module.exports = (image, done) ->
 				newName = "#{newName}.jpg"
 				file    = fs.createWriteStream "#{__dirname}/../images/#{newName}"
 
-				downloadImage = http.get(image
-					(response) ->
-						response.pipe file
+				httpsPattern =
+				/// ^
+					(?:https)
+				///i
 
-						upd_url  = "https://api.vk.com/method/photos.getUploadServer"
-						upd_url += "?group_id=#{config.common.group_id}"
-						upd_url += "&album_id=#{config.common.linews_thumbnail_id}"
-						upd_url += "&access_token=#{config.common.vk_token}"
+				if httpsPattern.test(image)
+					downloadImage = https.get(image
+						(response) ->
+							response.pipe file
 
-						request(
-							upd_url
-							(err, head, body) ->
-								if err
-									toLog "Error in ImageUploader: #{err}"
-									return callback err, []
+							upd_url  = "https://api.vk.com/method/photos.getUploadServer"
+							upd_url += "?group_id=#{params.group}"
+							upd_url += "&album_id=#{params.album}"
+							upd_url += "&access_token=#{params.token}"
 
-								body = JSON.parse body
-								callback null, newName, body
-						)
-				)
+							request(
+								upd_url
+								(err, head, body) ->
+									if err
+										toLog "Error in ImageUploader: #{err}"
+										return callback err, []
+
+									body = JSON.parse body
+									callback null, newName, body
+							)
+					)
+				else
+					downloadImage = http.get(image
+						(response) ->
+							response.pipe file
+
+							upd_url  = "https://api.vk.com/method/photos.getUploadServer"
+							upd_url += "?group_id=#{params.group}"
+							upd_url += "&album_id=#{params.album}"
+							upd_url += "&access_token=#{params.token}"
+
+							request(
+								upd_url
+								(err, head, body) ->
+									if err
+										toLog "Error in ImageUploader: #{err}"
+										return callback err, []
+
+									body = JSON.parse body
+									callback null, newName, body
+							)
+					)
 			(newName, body, callback) ->
 				if body.response.upload_url
 					imagePath = "#{__dirname}/../images/#{newName}"
@@ -65,9 +98,9 @@ module.exports = (image, done) ->
 				data = JSON.parse data
 
 				save_url  =  "https://api.vk.com/method/photos.save"
-				save_url += "?access_token=#{config.common.vk_token}"
-				save_url += "&album_id=#{config.common.linews_thumbnail_id}"
-				save_url += "&group_id=#{config.common.group_id}"
+				save_url += "?access_token=#{params.token}"
+				save_url += "&album_id=#{params.album}"
+				save_url += "&group_id=#{params.group}"
 				save_url += "&server=#{data.server}"
 				save_url += "&photos_list=#{data.photos_list}"
 				save_url += "&hash=#{data.hash}"
@@ -84,7 +117,7 @@ module.exports = (image, done) ->
 			if err
 				return toLog "Error in ImageUploader: #{err}"
 
-			done result
+			done null, result
 	)
 
 	return;

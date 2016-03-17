@@ -40,10 +40,12 @@ module.exports = (images, done) ->
 											global.images[global.count]
 											(response) ->
 												response.pipe file
+												callback null, true
 										)
+									else
+										callback null, true
 
 									global.count++
-									callback null, true
 							)
 						else
 							dowFuncs.push(
@@ -56,10 +58,12 @@ module.exports = (images, done) ->
 											global.images[global.count]
 											(response) ->
 												response.pipe file
+												callback null, true
 										)
+									else
+										callback null, true
 
 									global.count++
-									callback null, true
 							)
 
 					count++

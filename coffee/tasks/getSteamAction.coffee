@@ -36,7 +36,7 @@ module.exports = (req, res) ->
 					post = "#{start} #{post} #{end}"
 
 					str = encodeURIComponent post
-					last_url = "https://api.vk.com/method/wall.post?"
+					last_url  = "https://api.vk.com/method/wall.post?"
 					last_url += "owner_id=-#{config.common.group_id}"
 					last_url += "&message=#{str}"
 					last_url += "&from_group=1"

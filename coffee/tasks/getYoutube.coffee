@@ -4,12 +4,11 @@ log = require "../helpers/logs"
 sqlite3 = do require("sqlite3").verbose
 uploadVideo = require "../helpers/uploadVideoInVkByLink"
 async = require "async"
-db = new sqlite3.Database("#{__dirname}/../config/youtube.db")
 
 toLog   = (data) -> log.writeTo "../logs/youtube.log", data
 
 module.exports = (req, res) ->
-
+	db = new sqlite3.Database("#{__dirname}/../config/youtube.db")
 	db.serialize( ->
 		#db.run("CREATE TABLE channels (id, link, date)");
 		#db.run("CREATE TABLE published (id, video_link, date)");
@@ -84,6 +83,7 @@ module.exports = (req, res) ->
 							)
 
 							if(error)
+								do db.close
 								return toLog error
 							else if result && result.length
 								item = result[0]
@@ -96,6 +96,9 @@ module.exports = (req, res) ->
 									ins_query
 									$date: date
 									$link: "https://www.youtube.com/watch?v=#{item['id']}"
+									(error) ->
+										do db.close
+										toLog error
 								)
 
 								str = "#{item['name']}\n #lnGames"
