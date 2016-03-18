@@ -16,7 +16,7 @@ app.get '/', (req, res) -> getToken(req, res)
 app.get '/setstatus', (req, res) -> setStatus(req, res)
 app.get '/getyoutube', (req, res) -> getYoutube(req, res)
 app.get '/getsteamnews', (req, res) -> getStaemNews(req, res)
-app.get '/getinstargram', (req, res) -> getInstagram(req, res)
+app.get '/getinstagram', (req, res) -> getInstagram(req, res)
 app.get '/gettwitter', (req, res) -> getTwitter(req, res)
 app.get '/deanna', (req, res) -> DeAnna(req, res)
 

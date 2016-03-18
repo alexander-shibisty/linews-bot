@@ -57,7 +57,6 @@ module.exports = (req, res) ->
 								callback "Вероятно, пост уже был", []
 					)
 				(result, callback) ->
-					console.log  result
 					unless result.length then return callback "Нет данных", [], []
 
 					uploadImageInVk(

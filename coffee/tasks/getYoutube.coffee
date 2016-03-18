@@ -80,11 +80,13 @@ module.exports = (req, res) ->
 								"UPDATE #{config.database.youtube_channels_table} SET date = $date WHERE link = $link"
 								$date: date
 								$link: row.link
+								(error) ->
+									if error then "Error in update: #{error}"
 							)
 
 							if(error)
 								do db.close
-								return toLog error
+								return toLog "Error in last callback: #{error}"
 							else if result && result.length
 								item = result[0]
 								data = result[1]
@@ -98,11 +100,11 @@ module.exports = (req, res) ->
 									$link: "https://www.youtube.com/watch?v=#{item['id']}"
 									(error) ->
 										do db.close
-										toLog error
+										if error then toLog "Error in insert: #{error}"
 								)
 
 								str = "#{item['name']}\n #lnGames"
-								str = encodeURIComponent str
+								#str = encodeURIComponent str
 								last_url  = "https://api.vk.com/method/wall.post"
 								last_url += "?access_token=#{config.common.vk_token}"
 								last_url += "&owner_id=-#{config.common.group_id}"
@@ -117,6 +119,7 @@ module.exports = (req, res) ->
 
 										return toLog body
 								)
+							else do db.close
 					)
 		)
 	)
