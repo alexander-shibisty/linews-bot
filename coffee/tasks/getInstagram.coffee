@@ -4,11 +4,13 @@ config = require "config"
 log = require "../helpers/logs"
 async = require "async"
 sqlite3 = do require("sqlite3").verbose
+uploadImageInVk = require "../helpers/uploadImageInVk"
+db = new sqlite3.Database("#{__dirname}/../config/instagram.db")
 
 toLog   = (data) -> log.writeTo "../logs/instagram.log", data
 
 module.exports = (req, res) ->
-	db = new sqlite3.Database("#{__dirname}/../config/instagram.db")
+
 	db.serialize( ->
 		db.each(
 			"SELECT rowid AS id, channel_id FROM #{config.database.instagram_accounts} ORDER BY date ASC LIMIT $limit"
@@ -16,7 +18,7 @@ module.exports = (req, res) ->
 			(error, row) ->
 				if error then return toLog "SQLite Error: #{error}"
 
-				unless row.length then return toLog "Аккаунты не найдены"
+				unless row.id then return toLog "Аккаунты не найдены"
 
 				async.waterfall(
 					[
@@ -25,8 +27,9 @@ module.exports = (req, res) ->
 								"SELECT post_id FROM published WHERE channel_id = #{row.channel_id} ORDER BY date LIMIT 1"
 								(error, item) ->
 									if error then return callback "Ошибка запроса: #{error}", null
-									console.log item
-									callback null, item.post_id
+									console.log
+									list_id = if item then item.post_id else 0
+									callback null, list_id
 							)
 						(last_id, callback) ->
 							get_url  = "https://api.instagram.com/v1/users/"
@@ -48,6 +51,7 @@ module.exports = (req, res) ->
 											result.push
 												image: item.images.standard_resolution.url
 												id: item.id
+												username: item.user.username
 
 									callback null, result
 							)
@@ -79,46 +83,61 @@ module.exports = (req, res) ->
 					]
 					(error, result, upload) ->
 						if error
-							do db.close
+							#do db.close
 							return toLog "Error: #{error}"
 						unless result.length
-							do db.close
+							#do db.close
 							return toLog "Нет данных"
 						unless upload
-							do db.close
+							#do db.close
 							return toLog "Нет данных"
 
 						date = (new Date()).getTime()
-						ins_query  = "INSERT INTO #{config.database.instagram_published} (date, link, post_id, channel_id) "
-						ins_query += "VALUES($date, $link, $post_id, $channel_id)"
+						image      = result[0].image        || null
+						id         = result[0].id           || null
+						username   = result[0].username     || null
+						channel_id = row.channel_id         || null
+						pid		   = upload.response[0].pid || null
 
 						db.run(
-							ins_query
-							$date : date
-							$link : result[0].image
-							$post_id : result[0].id
-							$channel_id: row.channel_id
+							"UPDATE #{config.database.instagram_accounts} SET date = $date WHERE channel_id = $channel_id"
+							$date: date
+							$channel_id: channel_id
 							(error) ->
-								if error then toLog error
-
-								post = "#instagram #lnGames"
-								post = encodeURIComponent post
-
-								post_url = "https://api.vk.com/method/wall.post?"
-								post_url += "owner_id=-#{config.common.group_id}"
-								post_url += "&message=#{post}"
-								post_url += "&from_group=1"
-								post_url += "&attachments=photo-#{config.common.group_id}_#{upload.response[0].pid}"
-								post_url += "&access_token=#{config.common.vk_token}"
-
-								request(
-									post_url,
-									(err, head, body) ->
-										toLog body
-								)
-
-								do db.close
+								if error then "Error in update: #{error}"
 						)
+
+						ins_query  = "INSERT INTO #{config.database.instagram_published} (date, link, post_id, channel_id) "
+						ins_query += "VALUES($date, $link, $post_id, $channel_id)"
+						if image && id && username && channel_id && pid
+							db.run(
+								ins_query
+								$date : date
+								$link : image
+								$post_id : id
+								$channel_id: channel_id
+								(error) ->
+									if error then toLog error
+
+									post  = "Из официальной страницы разработчиков в Instagram, #{username}.\n\n"
+									post += "#instagram #lnGames"
+									post = encodeURIComponent post
+
+									post_url = "https://api.vk.com/method/wall.post?"
+									post_url += "owner_id=-#{config.common.group_id}"
+									post_url += "&message=#{post}"
+									post_url += "&from_group=1"
+									post_url += "&attachments=photo-#{config.common.group_id}_#{pid}/"
+									post_url += "&access_token=#{config.common.vk_token}"
+
+									request(
+										post_url,
+										(err, head, body) ->
+											toLog body
+									)
+
+									#do db.close
+							)
 				)
 		)
 
