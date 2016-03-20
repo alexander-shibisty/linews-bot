@@ -95,6 +95,8 @@ module.exports = (req, res) ->
 				unless upload
 					#do db.close
 					return toLog "Нет данных"
+				unless upload.response
+					return toLog "Нет данных"
 
 				link    = result[0].image        || null
 				post_id = result[0].id           || null

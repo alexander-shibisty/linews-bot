@@ -16,19 +16,17 @@ module.exports = (req, res) ->
 					steam
 					(err, head, body) ->
 						if err
-							toLog "Error in first query: #{err}"
-							callback err, []
+							callback "Error in first query: #{err}", ""
 						else
 							callback null, body
 				)
-			(body, callback) ->
+			(html, callback) ->
 				env = require("jsdom").env
-				html = body
 
 				env(
 					html
 					(errors, window) ->
-						if errors then toLog "Error in HTML Parser: #{errors}"
+						if errors then return callback "Error in HTML Parser: #{errors}", []
 
 						$ = require("jquery")(window)
 						images = $("#spotlight_scroll").children("div").find(".spotlight_img a img")
