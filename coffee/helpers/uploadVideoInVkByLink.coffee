@@ -27,7 +27,7 @@ module.exports = (video, done) ->
 
 			json = JSON.parse body
 
-			if json.response.upload_url
+			if json.response && json.response.upload_url
 				request json.response.upload_url, (err, head, body) -> done json
 			else
 				done json
