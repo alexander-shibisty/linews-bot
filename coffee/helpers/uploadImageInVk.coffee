@@ -73,7 +73,7 @@ module.exports = (image, params, done) ->
 							)
 					)
 			(newName, body, callback) ->
-				if body.response.upload_url
+				if body.response && body.response.upload_url
 					imagePath = "#{__dirname}/../images/#{newName}"
 					rest.post(
 						body.response.upload_url

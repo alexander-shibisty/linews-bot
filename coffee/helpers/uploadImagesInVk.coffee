@@ -104,7 +104,7 @@ module.exports = (images, done) ->
 						)
 					count++
 
-				if body.response.upload_url
+				if body.response && body.response.upload_url
 					rest.post(
 						body.response.upload_url
 						multipart: true
