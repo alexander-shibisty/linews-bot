@@ -115,7 +115,7 @@ module.exports = (images, done) ->
 							callback null, data
 					)
 				else
-					callback "Что-то пошло не так: #{data}.", []
+					callback "Что-то пошло не так: #{body}.", []
 			(data, callback) ->
 				data = JSON.parse data
 
