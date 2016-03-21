@@ -59,7 +59,7 @@ module.exports = (req, res) ->
 					images,
 					(downDone) ->
 
-						if downDone.response.length
+						if downDone.response && downDone.response.length
 							count = 0
 
 							for imageItem in downDone.response
