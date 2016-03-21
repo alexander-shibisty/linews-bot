@@ -7,8 +7,10 @@ async = require "async"
 
 toLog   = (data) -> log.writeTo "../logs/youtube.log", data
 
+db = new sqlite3.Database("#{__dirname}/../config/youtube.db")
+
 module.exports = (req, res) ->
-	db = new sqlite3.Database("#{__dirname}/../config/youtube.db")
+
 	db.serialize( ->
 		#db.run("CREATE TABLE channels (id, link, date)");
 		#db.run("CREATE TABLE published (id, video_link, date)");
@@ -35,19 +37,22 @@ module.exports = (req, res) ->
 											return toLog "YT Error: #{err}"
 
 										json = JSON.parse body
-										items = json.items
+										items = json.items || []
 
-										if items[0].id.videoId && items[0].snippet.title
+										videoId = if items[0] then items[0].id.videoId    else null
+										title   = if items[0] then items[0].snippet.title else null
+
+										if videoId && title
 											item = []
-											item['id'] = items[0].id.videoId
-											item['name'] = encodeURIComponent(items[0].snippet.title)
+											item['id'] = videoId
+											item['name'] = encodeURIComponent(title)
 
 											callback null, item
 										else
 											callback 'Не хватает данных', null
 								)
 							(item, callback) ->
-								if !item['id'] && !item['name'] then return callback 'Не хватает данных', null
+								if !item['id'] || !item['name'] then return callback 'Не хватает данных', null
 
 								db.get(
 									"SELECT rowid AS id, link FROM #{config.database.youtube_published_table} WHERE link = $link"
@@ -85,41 +90,45 @@ module.exports = (req, res) ->
 							)
 
 							if(error)
-								do db.close
+								#do db.close
 								return toLog "Error in last callback: #{error}"
-							else if result && result.length
-								item = result[0]
-								data = result[1]
+							else if result && result.length >= 2
+								item = result[0] || []
+								data = result[1] || []
+
+								id       = item['id'] || null
+								owner_id = data.response.owner_id || null
+								vid      = data.response.vid || null
 
 								ins_query  = "INSERT INTO #{config.database.youtube_published_table} (date, link) "
 								ins_query += "VALUES($date, $link)"
 
-								db.run(
-									ins_query
-									$date: date
-									$link: "https://www.youtube.com/watch?v=#{item['id']}"
-									(error) ->
-										do db.close
-										if error then toLog "Error in insert: #{error}"
-								)
+								if id && owner_id && vid
+									db.run(
+										ins_query
+										$date: date
+										$link: "https://www.youtube.com/watch?v=#{item['id']}"
+										(error) ->
+											#do db.close
+											if error then toLog "Error in insert: #{error}"
+									)
 
-								str = "#{item['name']}\n #lnGames"
-								#str = encodeURIComponent str
-								last_url  = "https://api.vk.com/method/wall.post"
-								last_url += "?access_token=#{config.common.vk_token}"
-								last_url += "&owner_id=-#{config.common.group_id}"
-								last_url += "&attachments=video#{data.response.owner_id}_#{data.response.vid}"
-								last_url += "&message=#{str}"
-								last_url += "&from_group=1"
+									str = "#{item['name']}\n #lnGames"
+									#str = encodeURIComponent str
+									last_url  = "https://api.vk.com/method/wall.post"
+									last_url += "?access_token=#{config.common.vk_token}"
+									last_url += "&owner_id=-#{config.common.group_id}"
+									last_url += "&attachments=video#{owner_id}_#{vid}"
+									last_url += "&message=#{str}"
+									last_url += "&from_group=1"
 
-								request(
-									last_url
-									(err, head, body) ->
-										if err then return toLog err
+									request(
+										last_url
+										(err, head, body) ->
+											if err then return toLog err
 
-										return toLog body
-								)
-							else do db.close
+											return toLog body
+									)
 					)
 		)
 	)

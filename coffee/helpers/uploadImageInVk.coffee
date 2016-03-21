@@ -95,23 +95,24 @@ module.exports = (image, params, done) ->
 				else
 					callback "Что-то пошло не так: #{body}."
 			(data, callback) ->
-				data = JSON.parse data
+				if data
+					data = JSON.parse data
 
-				save_url  =  "https://api.vk.com/method/photos.save"
-				save_url += "?access_token=#{params.token}"
-				save_url += "&album_id=#{params.album}"
-				save_url += "&group_id=#{params.group}"
-				save_url += "&server=#{data.server}"
-				save_url += "&photos_list=#{data.photos_list}"
-				save_url += "&hash=#{data.hash}"
+					save_url  =  "https://api.vk.com/method/photos.save"
+					save_url += "?access_token=#{params.token}"
+					save_url += "&album_id=#{params.album}"
+					save_url += "&group_id=#{params.group}"
+					save_url += "&server=#{data.server}"
+					save_url += "&photos_list=#{data.photos_list}"
+					save_url += "&hash=#{data.hash}"
 
-				rest.get(
-					save_url
-				).on(
-					'complete',
-					(res) ->
-						callback null, res
-				)
+					rest.get(
+						save_url
+					).on(
+						'complete',
+						(res) ->
+							callback null, res
+					)
 		]
 		(err, result) ->
 			if err
