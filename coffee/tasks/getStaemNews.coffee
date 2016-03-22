@@ -5,7 +5,7 @@ async = require "async"
 
 uploadImagesInVk = require "../helpers/uploadImagesInVk"
 
-toLog   = (data) -> log.writeTo "../logs/steam.log", data
+toLog   = (data) -> log.writeTo "logs/steam.log", data
 
 module.exports = (req, res) ->
 	async.waterfall(

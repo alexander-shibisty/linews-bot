@@ -5,7 +5,7 @@ sqlite3 = do require("sqlite3").verbose
 uploadVideo = require "../helpers/uploadVideoInVkByLink"
 async = require "async"
 
-toLog   = (data) -> log.writeTo "../logs/youtube.log", data
+toLog   = (data) -> log.writeTo "logs/youtube.log", data
 
 db = new sqlite3.Database("#{__dirname}/../config/youtube.db")
 

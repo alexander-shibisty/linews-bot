@@ -2,7 +2,7 @@ request = require "request"
 config = require "config"
 log = require "../helpers/logs"
 
-toLog   = (data) -> log.writeTo "../logs/steam.log", data
+toLog   = (data) -> log.writeTo "logs/steam.log", data
 
 module.exports = (req, res) ->
 	steam = "http://store.steampowered.com/?cc=ru"

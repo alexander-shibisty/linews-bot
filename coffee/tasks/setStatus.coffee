@@ -4,7 +4,7 @@ log     = require "../helpers/logs"
 date    = require "../helpers/date"
 sqlite3 = do require("sqlite3").verbose
 
-toLog   = (data) -> log.writeTo "../logs/status.log", data
+toLog   = (data) -> log.writeTo "logs/status.log", data
 
 module.exports = (req, res) ->
 	db = new sqlite3.Database("#{__dirname}/../config/status.db")

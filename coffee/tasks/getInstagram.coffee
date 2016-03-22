@@ -7,7 +7,7 @@ sqlite3 = do require("sqlite3").verbose
 uploadImageInVk = require "../helpers/uploadImageInVk"
 db = new sqlite3.Database("#{__dirname}/../config/instagram.db")
 
-toLog   = (data) -> log.writeTo "../logs/instagram.log", data
+toLog   = (data) -> log.writeTo "logs/instagram.log", data
 
 module.exports = (req, res) ->
 

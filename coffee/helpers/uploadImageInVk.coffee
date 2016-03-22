@@ -8,7 +8,7 @@ sha1  	= require "sha1"
 async 	= require "async"
 log   	= require "../helpers/logs"
 
-toLog   = (data) -> log.writeTo "../logs/status.log", data
+toLog   = (data) -> log.writeTo "logs/status.log", data
 
 module.exports = (image, params, done) ->
 	if !image
