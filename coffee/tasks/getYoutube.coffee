@@ -2,7 +2,7 @@ request     = require "request"
 config      = require "config"
 log         = require "../helpers/logs"
 sqlite3     = do require("sqlite3").verbose
-uploadVideo = require "../helpers/uploadVideoInVkByLink"
+uploadVideo = require "../helpers/uploadVideoInVkByUrl"
 async       = require "async"
 db          = new sqlite3.Database("#{__dirname}/../config/youtube.db")
 

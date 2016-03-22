@@ -4,7 +4,7 @@ config          = require "config"
 log             = require "../helpers/logs"
 async           = require "async"
 sqlite3         = do require("sqlite3").verbose
-uploadImageInVk = require "../helpers/uploadImageInVk"
+uploadImageInVk = require "../helpers/uploadImageInVkByUrl"
 db              = new sqlite3.Database("#{__dirname}/../config/DeAnna.db")
 
 toLog   = (data) -> log.writeTo "logs/DeAnna.log", data

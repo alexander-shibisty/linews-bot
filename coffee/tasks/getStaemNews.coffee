@@ -3,7 +3,7 @@ config           = require "config"
 log              = require "../helpers/logs"
 async            = require "async"
 
-uploadImagesInVk = require "../helpers/uploadImagesInVk"
+uploadImagesInVk = require "../helpers/uploadImagesInVkByUrls"
 
 toLog            = (data) -> log.writeTo "logs/steam.log", data
 

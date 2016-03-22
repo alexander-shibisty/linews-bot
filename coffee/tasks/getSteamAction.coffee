@@ -1,6 +1,6 @@
 request = require "request"
-config = require "config"
-log = require "../helpers/logs"
+config  = require "config"
+log     = require "../helpers/logs"
 
 toLog   = (data) -> log.writeTo "logs/steam.log", data
 
