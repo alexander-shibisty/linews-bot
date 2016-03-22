@@ -16,7 +16,7 @@ module.exports = (req, res) ->
 		#db.run("CREATE TABLE published (id, video_link, date)");
 		db.each(
 			"SELECT rowid AS id, link FROM #{config.database.youtube_channels_table} ORDER BY date ASC LIMIT $limit"
-			$limit: 3
+			$limit: 1
 			(error, row) ->
 				if error then toLog "SQLite Error: #{error}"
 

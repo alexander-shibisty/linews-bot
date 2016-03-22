@@ -123,8 +123,8 @@ module.exports = (req, res) ->
 									post += "#instagram #lnGames"
 									post = encodeURIComponent post
 
-									post_url = "https://api.vk.com/method/wall.post?"
-									post_url += "owner_id=-#{config.common.group_id}"
+									post_url = "https://api.vk.com/method/wall.post"
+									post_url += "?owner_id=-#{config.common.group_id}"
 									post_url += "&message=#{post}"
 									post_url += "&from_group=1"
 									post_url += "&attachments=photo-#{config.common.group_id}_#{pid}/"
