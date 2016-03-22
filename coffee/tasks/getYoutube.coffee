@@ -1,13 +1,13 @@
-request = require "request"
-config = require "config"
-log = require "../helpers/logs"
-sqlite3 = do require("sqlite3").verbose
+request     = require "request"
+config      = require "config"
+log         = require "../helpers/logs"
+sqlite3     = do require("sqlite3").verbose
 uploadVideo = require "../helpers/uploadVideoInVkByLink"
-async = require "async"
+async       = require "async"
+db          = new sqlite3.Database("#{__dirname}/../config/youtube.db")
 
-toLog   = (data) -> log.writeTo "logs/youtube.log", data
+toLog       = (data) -> log.writeTo "logs/youtube.log", data
 
-db = new sqlite3.Database("#{__dirname}/../config/youtube.db")
 
 module.exports = (req, res) ->
 
@@ -61,10 +61,9 @@ module.exports = (req, res) ->
 										if !row && !error
 											uploadVideo(
 												item
-												(data) ->
-													if data.error
-														toLog "Не удалась загрузка. #{data.error}"
-														return callback 'Не удалась загрузка.', null
+												(error, data) ->
+													if error
+														return callback "Не удалась загрузка. #{data.error}", null
 
 													response = []
 													response.push item

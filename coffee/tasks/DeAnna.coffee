@@ -1,11 +1,11 @@
 #work in progress
-request = require "request"
-config = require "config"
-log = require "../helpers/logs"
-async = require "async"
-sqlite3 = do require("sqlite3").verbose
+request         = require "request"
+config          = require "config"
+log             = require "../helpers/logs"
+async           = require "async"
+sqlite3         = do require("sqlite3").verbose
 uploadImageInVk = require "../helpers/uploadImageInVk"
-db = new sqlite3.Database("#{__dirname}/../config/DeAnna.db")
+db              = new sqlite3.Database("#{__dirname}/../config/DeAnna.db")
 
 toLog   = (data) -> log.writeTo "logs/DeAnna.log", data
 
@@ -51,7 +51,6 @@ module.exports = (req, res) ->
 							callback null, result
 					)
 				(result, callback) ->
-
 					if result.length
 						db.get(
 							"SELECT post_id FROM published WHERE link = $link LIMIT 1"
@@ -91,12 +90,12 @@ module.exports = (req, res) ->
 					return toLog "Error: #{error}"
 				unless result.length
 					#do db.close
-					return toLog "Нет данных"
+					return toLog "Нет данных результата"
 				unless upload
 					#do db.close
-					return toLog "Нет данных"
+					return toLog "Нет данных загрузки"
 				unless upload.response
-					return toLog "Нет данных"
+					return toLog "Нет данных загрузки, ошибка в API"
 
 				link    = result[0].image        || null
 				post_id = result[0].id           || null

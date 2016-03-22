@@ -1,11 +1,11 @@
-request = require "request"
-config = require "config"
-log = require "../helpers/logs"
-async = require "async"
+request          = require "request"
+config           = require "config"
+log              = require "../helpers/logs"
+async            = require "async"
 
 uploadImagesInVk = require "../helpers/uploadImagesInVk"
 
-toLog   = (data) -> log.writeTo "logs/steam.log", data
+toLog            = (data) -> log.writeTo "logs/steam.log", data
 
 module.exports = (req, res) ->
 	async.waterfall(
@@ -47,7 +47,7 @@ module.exports = (req, res) ->
 						if result.length
 							callback null, result
 						else
-							callback 'Недостаточно данных', []
+							callback "Недостаточно данных", []
 				)
 			(result, callback) ->
 				images = []
@@ -57,7 +57,8 @@ module.exports = (req, res) ->
 
 				uploadImagesInVk(
 					images,
-					(downDone) ->
+					(error, downDone) ->
+						if error then return callback error, []
 
 						if downDone.response && downDone.response.length
 							count = 0
@@ -68,12 +69,12 @@ module.exports = (req, res) ->
 
 							callback null, result
 						else
-							callback 'Не удалось загрузить картинки', []
+							callback "Не удалось загрузить картинки", []
 				)
 		]
 		(error, result) ->
 			if error
-				return toLog "Error in last async method: #{error}"
+				return toLog "Error: #{error}"
 
 			post = "Сейчас в Steam:\n"
 			attachments = ""

@@ -17,12 +17,10 @@ module.exports = (video, done) ->
 		save_url
 		(err, head, body) ->
 			if err
-				return done
-					error: err
+				return done err, null
 
 			if !body
-				return done
-					error: "Отсутствуют данные."
+				return done "Отсутствуют данные.", null
 
 
 			json = JSON.parse body
@@ -30,5 +28,5 @@ module.exports = (video, done) ->
 			if json.response && json.response.upload_url
 				request json.response.upload_url, (err, head, body) -> done json
 			else
-				done json
+				done "Ошибка API: #{body}", null
 	)
