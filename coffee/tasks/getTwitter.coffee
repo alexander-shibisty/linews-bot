@@ -1,4 +1,3 @@
-#work in progress
 request         = require "request"
 config          = require "config"
 sqlite3         = do require("sqlite3").verbose
@@ -14,8 +13,8 @@ toLog           = (data) -> log.writeTo "logs/twitter.log", data
 module.exports = (req, res) ->
 
 	db.serialize( ->
-		#db.run("CREATE TABLE channels (id, link, date)");
-		#db.run("CREATE TABLE published (id, video_link, date)");
+		#db.run("CREATE TABLE channels (id, user_name, date)");
+		#db.run("CREATE TABLE published (id, post_id, user_name, date)");
 		db.each(
 			"SELECT rowid AS id, user_name FROM #{config.twitter.database.accounts_table} ORDER BY date ASC LIMIT $limit"
 			$limit: 1
@@ -146,7 +145,7 @@ module.exports = (req, res) ->
 										post_url += "&from_group=1"
 										post_url += "&attachments=#{image}/"
 										post_url += "&access_token=#{config.common.vk_token}"
-										
+
 										request(
 											post_url,
 											(err, head, body) ->
