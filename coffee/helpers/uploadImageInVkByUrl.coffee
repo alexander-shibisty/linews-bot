@@ -89,6 +89,7 @@ module.exports = (image, params, done) ->
 							callback null, data
 					)
 				else
+					body = if typeof body == 'object' then JSON.stringify body else body
 					callback "Что-то пошло не так: #{body}."
 			(data, callback) ->
 				if data
