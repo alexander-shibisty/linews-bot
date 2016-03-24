@@ -1,13 +1,13 @@
 #work in progress
-request = require "request"
-config = require "config"
-log = require "../helpers/logs"
-async = require "async"
-sqlite3 = do require("sqlite3").verbose
-uploadImageInVk = require "../helpers/uploadImageInVk"
-db = new sqlite3.Database("#{__dirname}/../config/instagram.db")
+request         = require "request"
+config          = require "config"
+log             = require "../helpers/logs"
+async           = require "async"
+sqlite3         = do require("sqlite3").verbose
+uploadImageInVk = require "../helpers/uploadImageInVkByUrl"
+db              = new sqlite3.Database("#{__dirname}/../config/instagram.db")
 
-toLog   = (data) -> log.writeTo "../logs/instagram.log", data
+toLog           = (data) -> log.writeTo "logs/instagram.log", data
 
 module.exports = (req, res) ->
 
@@ -123,8 +123,8 @@ module.exports = (req, res) ->
 									post += "#instagram #lnGames"
 									post = encodeURIComponent post
 
-									post_url = "https://api.vk.com/method/wall.post?"
-									post_url += "owner_id=-#{config.common.group_id}"
+									post_url = "https://api.vk.com/method/wall.post"
+									post_url += "?owner_id=-#{config.common.group_id}"
 									post_url += "&message=#{post}"
 									post_url += "&from_group=1"
 									post_url += "&attachments=photo-#{config.common.group_id}_#{pid}/"

@@ -8,8 +8,6 @@ sha1  	= require "sha1"
 async 	= require "async"
 log   	= require "../helpers/logs"
 
-toLog   = (data) -> log.writeTo "../logs/status.log", data
-
 module.exports = (image, params, done) ->
 	if !image
 		return done "Переданы не все аргументы", null
@@ -44,8 +42,7 @@ module.exports = (image, params, done) ->
 								upd_url
 								(err, head, body) ->
 									if err
-										toLog "Error in ImageUploader: #{err}"
-										return callback err, []
+										return callback "Error in ImageUploader: #{err}", []
 
 									body = JSON.parse body
 									callback null, newName, body
@@ -65,8 +62,7 @@ module.exports = (image, params, done) ->
 								upd_url
 								(err, head, body) ->
 									if err
-										toLog "Error in ImageUploader: #{err}"
-										return callback err, []
+										return callback "Error in ImageUploader: #{err}", []
 
 									body = JSON.parse body
 									callback null, newName, body
@@ -116,7 +112,7 @@ module.exports = (image, params, done) ->
 		]
 		(err, result) ->
 			if err
-				return toLog "Error in ImageUploader: #{err}"
+				return done "Error in ImageUploader: #{err}", null
 
 			done null, result
 	)

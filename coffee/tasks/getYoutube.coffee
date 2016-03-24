@@ -1,13 +1,13 @@
-request = require "request"
-config = require "config"
-log = require "../helpers/logs"
-sqlite3 = do require("sqlite3").verbose
-uploadVideo = require "../helpers/uploadVideoInVkByLink"
-async = require "async"
+request     = require "request"
+config      = require "config"
+log         = require "../helpers/logs"
+sqlite3     = do require("sqlite3").verbose
+uploadVideo = require "../helpers/uploadVideoInVkByUrl"
+async       = require "async"
+db          = new sqlite3.Database("#{__dirname}/../config/youtube.db")
 
-toLog   = (data) -> log.writeTo "../logs/youtube.log", data
+toLog       = (data) -> log.writeTo "logs/youtube.log", data
 
-db = new sqlite3.Database("#{__dirname}/../config/youtube.db")
 
 module.exports = (req, res) ->
 
@@ -16,7 +16,7 @@ module.exports = (req, res) ->
 		#db.run("CREATE TABLE published (id, video_link, date)");
 		db.each(
 			"SELECT rowid AS id, link FROM #{config.database.youtube_channels_table} ORDER BY date ASC LIMIT $limit"
-			$limit: 3
+			$limit: 1
 			(error, row) ->
 				if error then toLog "SQLite Error: #{error}"
 
@@ -61,10 +61,9 @@ module.exports = (req, res) ->
 										if !row && !error
 											uploadVideo(
 												item
-												(data) ->
-													if data.error
-														toLog "Не удалась загрузка. #{data.error}"
-														return callback 'Не удалась загрузка.', null
+												(error, data) ->
+													if error
+														return callback "Не удалась загрузка. #{data.error}", null
 
 													response = []
 													response.push item
