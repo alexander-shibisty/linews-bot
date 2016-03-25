@@ -3,22 +3,24 @@ app     = do express
 config  = require 'config'
 
 #include tasks
-getToken     = require './tasks/getToken'
 setStatus    = require './tasks/setStatus'
+getToken     = require './tasks/getToken'
 getYoutube   = require './tasks/getYoutube'
 getStaemNews = require './tasks/getStaemNews'
 getInstagram = require './tasks/getInstagram'
 getTwitter   = require './tasks/getTwitter'
+getPosts     = require './tasks/getPosts'
 DeAnna       = require './tasks/DeAnna'
 
 #init routes
-app.get '/',             (req, res) -> getToken(req, res)
-app.get '/setstatus',    (req, res) -> setStatus(req, res)
-app.get '/getyoutube',   (req, res) -> getYoutube(req, res)
-app.get '/getsteamnews', (req, res) -> getStaemNews(req, res)
-app.get '/getinstagram', (req, res) -> getInstagram(req, res)
-app.get '/gettwitter',   (req, res) -> getTwitter(req, res)
-app.get '/deanna',       (req, res) -> DeAnna(req, res)
+app.get '/',             (req, res) -> getToken     req, res
+app.get '/setstatus',    (req, res) -> setStatus    req, res
+app.get '/getyoutube',   (req, res) -> getYoutube   req, res
+app.get '/getsteamnews', (req, res) -> getStaemNews req, res
+app.get '/getinstagram', (req, res) -> getInstagram req, res
+app.get '/gettwitter',   (req, res) -> getTwitter   req, res
+app.get '/getposts',     (req, res) -> getPosts     req, res
+app.get '/deanna',       (req, res) -> DeAnna       req, res
 
 #last route
 app.get '*', (req, res) -> res.status(404).send 'error 404'
