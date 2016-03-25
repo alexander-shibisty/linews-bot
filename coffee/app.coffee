@@ -10,6 +10,7 @@ getStaemNews = require './tasks/getStaemNews'
 getInstagram = require './tasks/getInstagram'
 getTwitter   = require './tasks/getTwitter'
 getPosts     = require './tasks/getPosts'
+sendPosts    = require './tasks/sendPosts'
 DeAnna       = require './tasks/DeAnna'
 
 #init routes
@@ -20,6 +21,7 @@ app.get '/getsteamnews', (req, res) -> getStaemNews req, res
 app.get '/getinstagram', (req, res) -> getInstagram req, res
 app.get '/gettwitter',   (req, res) -> getTwitter   req, res
 app.get '/getposts',     (req, res) -> getPosts     req, res
+app.get '/sendposts',    (req, res) -> sendPosts    req, res
 app.get '/deanna',       (req, res) -> DeAnna       req, res
 
 #last route
