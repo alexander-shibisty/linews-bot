@@ -30,7 +30,7 @@ module.exports = (req, res) ->
 									(error, head, body) ->
 										if error then return callback 'Ошибка запроса к API', []
 
-										json = JSON.parse body
+										json = if typeof body == "object" then body else JSON.parse body
 										posts = []
 
 										for post in json.response

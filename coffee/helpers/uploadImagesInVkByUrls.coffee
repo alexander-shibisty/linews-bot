@@ -80,7 +80,7 @@ module.exports = (images, done) ->
 								if err
 									return callback "Error in ImageUploader: #{err}", []
 
-								body = JSON.parse body
+								body = if typeof body == "object" then body else JSON.parse body
 								callback null, global.newNames, body
 						)
 				)
@@ -114,7 +114,7 @@ module.exports = (images, done) ->
 				else
 					callback "Что-то пошло не так: #{body}.", []
 			(data, callback) ->
-				data = JSON.parse data
+				data = if typeof data == "object" then data else JSON.parse data
 
 				save_url  =  "https://api.vk.com/method/photos.save"
 				save_url += "?access_token=#{config.common.vk_token}"

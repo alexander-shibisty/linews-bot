@@ -44,7 +44,7 @@ module.exports = (image, params, done) ->
 									if err
 										return callback "Error in ImageUploader: #{err}", []
 
-									body = JSON.parse body
+									body = if typeof body == "object" then body else JSON.parse body
 									callback null, newName, body
 							)
 					)
@@ -64,7 +64,7 @@ module.exports = (image, params, done) ->
 									if err
 										return callback "Error in ImageUploader: #{err}", []
 
-									body = JSON.parse body
+									body = if typeof body == "object" then body else JSON.parse body
 									callback null, newName, body
 							)
 					)
@@ -93,7 +93,7 @@ module.exports = (image, params, done) ->
 					callback "Что-то пошло не так: #{body}."
 			(data, callback) ->
 				if data
-					data = JSON.parse data
+					data = if typeof data == "object" then data else JSON.parse data
 
 					save_url  =  "https://api.vk.com/method/photos.save"
 					save_url += "?access_token=#{params.token}"

@@ -36,7 +36,7 @@ module.exports = (req, res) ->
 										if err
 											return toLog "YT Error: #{err}"
 
-										json = JSON.parse body
+										json = if typeof body == "object" then body else JSON.parse body
 										items = json.items || []
 
 										videoId = if items[0] then items[0].id.videoId    else null
