@@ -13,6 +13,8 @@ module.exports = (req, res) ->
 		url
 		(error, head, body) ->
 			if error then toLog error
+
+			toLog body
 	)
 
 	do res.end
