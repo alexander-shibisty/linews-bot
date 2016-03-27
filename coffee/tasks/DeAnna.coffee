@@ -38,7 +38,7 @@ module.exports = (req, res) ->
 						get_url
 						(error, head, body) ->
 							if error then return callback "Ошибка Inst API: #{error}", []
-							json   = JSON.parse body
+							json   = if typeof body == "object" then body else JSON.parse body
 							data   = json.data
 							result = []
 

@@ -23,7 +23,7 @@ module.exports = (video, done) ->
 				return done "Отсутствуют данные.", null
 
 
-			json = JSON.parse body
+			json = if typeof body == "object" then body else JSON.parse body
 
 			if json.response && json.response.upload_url
 				request json.response.upload_url, (err, head, body) -> done json
