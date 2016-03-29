@@ -57,8 +57,8 @@ module.exports = (req, res) ->
 							)
 						(result, callback) ->
 							db.get(
-								"SELECT post_id FROM #{config.database.instagram_published} WHERE link = $link LIMIT 1"
-								$link: result.id
+								"SELECT post_id FROM #{config.database.instagram_published} WHERE post_id = $post_id LIMIT 1"
+								$post_id: result.id
 								(error, row) ->
 									if !error && !row
 										callback null, result
