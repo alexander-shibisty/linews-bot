@@ -53,8 +53,8 @@ module.exports = (req, res) ->
 				(result, callback) ->
 					if result.length
 						db.get(
-							"SELECT post_id FROM published WHERE link = $link LIMIT 1"
-							$link: result.image
+							"SELECT post_id FROM published WHERE post_id = $post_id LIMIT 1"
+							$post_id: result.id
 							(error, row) ->
 								if !error && !row
 									callback null, result
