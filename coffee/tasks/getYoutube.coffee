@@ -41,7 +41,7 @@ module.exports = (req, res) ->
 
 										videoId = if items[0] then items[0].id.videoId    else null
 										title   = if items[0] then items[0].snippet.title else null
-
+										console.log json
 										if videoId && title
 											item = []
 											item['id'] = videoId

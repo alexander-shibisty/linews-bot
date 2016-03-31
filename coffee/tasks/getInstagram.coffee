@@ -1,12 +1,12 @@
-request         = require "request"
-config          = require "config"
-log             = require "../helpers/logs"
-async           = require "async"
-sqlite3         = do require("sqlite3").verbose
+request		 = require "request"
+config		  = require "config"
+log			 = require "../helpers/logs"
+async		   = require "async"
+sqlite3		 = do require("sqlite3").verbose
 uploadImageInVk = require "../helpers/uploadImageInVkByUrl"
-db              = new sqlite3.Database("#{__dirname}/../config/instagram.db")
+db			  = new sqlite3.Database("#{__dirname}/../config/instagram.db")
 
-toLog           = (data) -> log.writeTo "logs/instagram.log", data
+toLog		   = (data) -> log.writeTo "logs/instagram.log", data
 
 module.exports = (req, res) ->
 
@@ -55,17 +55,22 @@ module.exports = (req, res) ->
 									callback null, result
 							)
 						(result, callback) ->
-							db.get(
-								"SELECT post_id FROM #{config.database.instagram_published} WHERE post_id = $post_id LIMIT 1"
-								$post_id: result.id
-								(error, row) ->
-									if !error && !row
-										callback null, result
-									else if error
-										callback "Ошибка запроса: #{error}", []
-									else
-										callback "Вероятно, пост уже был", []
-							)
+							unless result.length then return callback "Недостаточно данных.", []
+
+							if result[0] && result[0].id
+								db.get(
+									"SELECT link FROM #{config.database.instagram_published} WHERE post_id = $post_id LIMIT 1"
+									$post_id: result[0].id
+									(error, item) ->
+
+										if error
+											callback "Ошибка запроса: #{error}", []
+										else if item
+											callback "Вероятно, пост уже был", []
+										else if !item
+											callback null, result
+								)
+							else callback "Недостаточно данных.", []
 						(result, callback) ->
 							unless result.length then return callback "Нет данных", [], []
 
@@ -92,19 +97,26 @@ module.exports = (req, res) ->
 							return toLog "Нет данных"
 
 						date = (new Date()).getTime()
-						image      = result[0].image        || null
-						id         = result[0].id           || null
-						username   = result[0].username     || null
-						channel_id = row.channel_id         || null
-						pid		   = upload.response[0].pid || null
 
-						db.run(
-							"UPDATE #{config.database.instagram_accounts} SET date = $date WHERE channel_id = $channel_id"
-							$date: date
-							$channel_id: channel_id
-							(error) ->
-								if error then "Error in update: #{error}"
-						)
+						if result[0]
+							image	   = result[0].image	    || null
+							id		   = result[0].id		    || null
+							username   = result[0].username	    || null
+
+						if row
+							channel_id = row.channel_id		    || null
+
+						if upload && upload.response[0]
+							pid		   = upload.response[0].pid || null
+
+						if channel_id
+							db.run(
+								"UPDATE #{config.database.instagram_accounts} SET date = $date WHERE channel_id = $channel_id"
+								$date: date
+								$channel_id: channel_id
+								(error) ->
+									if error then "Error in update: #{error}"
+							)
 
 						ins_query  = "INSERT INTO #{config.database.instagram_published} (date, link, post_id, channel_id) "
 						ins_query += "VALUES($date, $link, $post_id, $channel_id)"
