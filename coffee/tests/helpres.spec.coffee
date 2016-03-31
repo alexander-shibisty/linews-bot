@@ -30,13 +30,15 @@ describe(
 			"should write to log"
 			(done) ->
 				file = "logs/test.log"
+				size = fs.statSync(file).size
 				log.writeTo file, "test"
 
 				fs.readFile(
 					"#{file}"
 					"utf8"
 					(err, data) ->
-						expect(data.length > 0).toEqual true
+						new_size = fs.statSync(file).size
+						expect( (new_size > size) ).toEqual true
 						do done
 				)
 		)

@@ -26,48 +26,30 @@ module.exports = (image, params, done) ->
 				httpsPattern =
 				/// ^
 					(?:https)
-				///i
+				///
 
-				if httpsPattern.test(image)
-					downloadImage = https.get(image
-						(response) ->
-							response.pipe file
+				protocol = if httpsPattern.test(image) then https else http
 
-							upd_url  = "https://api.vk.com/method/photos.getUploadServer"
-							upd_url += "?group_id=#{params.group}"
-							upd_url += "&album_id=#{params.album}"
-							upd_url += "&access_token=#{params.token}"
+				downloadImage = protocol.get(image
+					(response) ->
+						response.pipe file
 
-							request(
-								upd_url
-								(err, head, body) ->
-									if err
-										return callback "Error in ImageUploader: #{err}", []
+						upd_url  = "https://api.vk.com/method/photos.getUploadServer"
+						upd_url += "?group_id=#{params.group}"
+						upd_url += "&album_id=#{params.album}"
+						upd_url += "&access_token=#{params.token}"
 
-									body = if typeof body == "object" then body else JSON.parse body
-									callback null, newName, body
-							)
-					)
-				else
-					downloadImage = http.get(image
-						(response) ->
-							response.pipe file
+						request(
+							upd_url
+							(err, head, body) ->
+								if err
+									return callback "Error in ImageUploader: #{err}", []
 
-							upd_url  = "https://api.vk.com/method/photos.getUploadServer"
-							upd_url += "?group_id=#{params.group}"
-							upd_url += "&album_id=#{params.album}"
-							upd_url += "&access_token=#{params.token}"
+								body = if typeof body == "object" then body else JSON.parse body
+								callback null, newName, body
+						)
+				)
 
-							request(
-								upd_url
-								(err, head, body) ->
-									if err
-										return callback "Error in ImageUploader: #{err}", []
-
-									body = if typeof body == "object" then body else JSON.parse body
-									callback null, newName, body
-							)
-					)
 			(newName, body, callback) ->
 				if body.response && body.response.upload_url
 					imagePath = "#{__dirname}/../images/#{newName}"

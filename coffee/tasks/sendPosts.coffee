@@ -14,7 +14,7 @@ module.exports = (req, res) ->
 	query  = "SELECT rowid AS id, post "
 	query += "FROM #{posts} "
 	query += "WHERE published ISNULL OR published = '' "
-	query += "ORDER BY date ASC "
+	query += "ORDER BY RANDOM() "
 	query += "LIMIT $limit"
 
 	db.serialize( ->

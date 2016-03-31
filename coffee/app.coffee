@@ -12,7 +12,7 @@ getTwitter   = require './tasks/getTwitter'
 getPosts     = require './tasks/getPosts'
 sendPosts    = require './tasks/sendPosts'
 DeAnna       = require './tasks/DeAnna'
-killCaptcha       = require './tasks/killCaptcha'
+killCaptcha  = require './tasks/killCaptcha'
 
 #init routes
 app.get '/',             (req, res) -> getToken     req, res

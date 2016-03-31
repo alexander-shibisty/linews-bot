@@ -1,4 +1,3 @@
-#work in progress
 request         = require "request"
 config          = require "config"
 log             = require "../helpers/logs"
