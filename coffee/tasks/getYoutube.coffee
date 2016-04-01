@@ -41,7 +41,7 @@ module.exports = (req, res) ->
 
 										videoId = if items[0] then items[0].id.videoId    else null
 										title   = if items[0] then items[0].snippet.title else null
-										console.log json
+
 										if videoId && title
 											item = []
 											item['id'] = videoId
@@ -58,6 +58,12 @@ module.exports = (req, res) ->
 									"SELECT rowid AS id, link FROM #{config.database.youtube_published_table} WHERE link = $link"
 									$link: "https://www.youtube.com/watch?v=#{item['id']}"
 									(error, row) ->
+										if error
+											return callback "Ошибка запроса, #{error}", null
+
+										if row
+											return callback "Вероятно, пост уже был", null
+
 										if !row && !error
 											uploadVideo(
 												item
@@ -71,11 +77,9 @@ module.exports = (req, res) ->
 
 													callback null, response
 											)
-										else if error
-											callback "Ошибка запроса, #{error}", null
-										else
-											callback "Вероятно, пост уже был", null
 								)
+
+								return
 						]
 						(error, result) ->
 							date = (new Date()).getTime()
