@@ -91,7 +91,7 @@ module.exports = (req, res) ->
 
 				post += "Получить можно по ссылке: #{item.link}\n\n"
 
-			post += "#lnGames"
+			post += "#lnGames@linewson #BotArseny@linewson"
 			post  = encodeURIComponent post
 
 			last_url = "https://api.vk.com/method/wall.post"
