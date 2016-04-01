@@ -17,6 +17,7 @@ module.exports = (video, done) ->
 		save_url
 		(err, head, body) ->
 			if err
+				err = if typeof err == 'object' then JSON.stringify err else err
 				return done err, null
 
 			if !body
