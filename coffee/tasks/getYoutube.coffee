@@ -69,7 +69,7 @@ module.exports = (req, res) ->
 												item
 												(error, data) ->
 													if error
-														return callback "Не удалась загрузка. #{data.error}", null
+														return callback "Не удалась загрузка. #{error}", null
 
 													response = []
 													response.push item
