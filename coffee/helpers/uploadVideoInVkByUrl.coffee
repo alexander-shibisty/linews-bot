@@ -27,7 +27,7 @@ module.exports = (video, done) ->
 			json = if typeof body == "object" then body else JSON.parse body
 
 			if json.response && json.response.upload_url
-				request json.response.upload_url, (err, head, body) -> done json
+				request json.response.upload_url, (err, head, body) -> done null, json
 			else
 				done "Ошибка API: #{body}", null
 	)

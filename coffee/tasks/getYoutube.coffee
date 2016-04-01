@@ -93,7 +93,7 @@ module.exports = (req, res) ->
 							)
 
 							if(error)
-								#do db.close
+								error = if typeof error == 'object' then JSON.stringify error else error
 								return toLog "Error in last callback: #{error}"
 							else if result && result.length >= 2
 								item = result[0] || []
