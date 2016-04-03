@@ -116,7 +116,7 @@ module.exports = (req, res) ->
 											if error then toLog "Error in insert: #{error}"
 									)
 
-									#str = "#{item['name']}"
+									str = "#{item['name']}"
 									#str = encodeURIComponent str
 									last_url  = "https://api.vk.com/method/wall.post"
 									last_url += "?access_token=#{config.common.vk_token}"
