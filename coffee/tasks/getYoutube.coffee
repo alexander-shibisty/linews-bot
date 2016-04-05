@@ -102,6 +102,9 @@ module.exports = (req, res) ->
 
 								id       = item['id']             || null
 
+								ins_query  = "INSERT INTO #{config.database.youtube_published_table} (date, link) "
+								ins_query += "VALUES($date, $link)"
+
 								if id
 									db.run(
 										ins_query
@@ -114,9 +117,6 @@ module.exports = (req, res) ->
 
 								owner_id = data.response.owner_id || null
 								vid      = data.response.vid      || null
-
-								ins_query  = "INSERT INTO #{config.database.youtube_published_table} (date, link) "
-								ins_query += "VALUES($date, $link)"
 
 								if id && owner_id && vid
 									last = encodeURIComponent("\n #lnGames@linewson #BotArseny@linewson")
