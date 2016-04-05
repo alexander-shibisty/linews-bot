@@ -56,18 +56,23 @@ module.exports = (req, res) ->
 							(tweet, callback) ->
 								unless typeof tweet == "object" then return callback "Нет данных от API 1", []
 
-								db.get(
-									"SELECT rowid AS id, user_name FROM #{config.twitter.database.published_table} WHERE user_name = $user_name AND post_id = $post_id"
-									$user_name: row.user_name
-									$post_id: tweet.id
-									(error, row) ->
-										if error
-											callback "Ошибка в запросе: #{error}", []
-										else if row
-											callback "Вероятно пост уже был", []
-										else if !error && !row
-											callback null, tweet
-								)
+								id = tweet.id || null
+
+								if id
+									db.get(
+										"SELECT rowid AS id, user_name FROM #{config.twitter.database.published_table} WHERE user_name = $user_name AND post_id = $post_id"
+										$user_name: row.user_name
+										$post_id: tweet.id
+										(error, row) ->
+											if error
+												callback "Ошибка в запросе: #{error}", []
+											else if row
+												callback "Вероятно пост уже был", []
+											else if !error && !row
+												callback null, tweet
+									)
+								else
+									callback "Недостаточно данных", null
 							(tweet, callback) ->
 								unless typeof tweet == "object" then return callback "Нет данных от API 2", []
 
@@ -80,7 +85,7 @@ module.exports = (req, res) ->
 									userName: row.user_name
 									image: null
 
-								if tweet.entities && tweet.entities.media.length && tweet.entities.media[0].media_url
+								if tweet.entities && tweet.entities.media && tweet.entities.media.length && tweet.entities.media[0].media_url
 									image = tweet.entities.media[0].media_url
 
 									uploadImageInVk(

@@ -128,6 +128,8 @@ module.exports = (req, res) ->
 
 											return toLog body
 									)
+							else
+								return toLog "Что-то пошло не так"
 					)
 		)
 	)
