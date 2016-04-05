@@ -61,11 +61,11 @@ module.exports = (req, res) ->
 										if error
 											return callback "Ошибка запроса, #{error}", null
 
-										if row
+										else if row
 											return callback "Вероятно, пост уже был", null
 
-										if !row && !error
-											uploadVideo(
+										else if !row && !error
+											return uploadVideo(
 												item
 												(error, data) ->
 													if error
@@ -77,6 +77,7 @@ module.exports = (req, res) ->
 
 													callback null, response
 											)
+										else callback "Неизвестная ошибка", []
 								)
 
 								return
