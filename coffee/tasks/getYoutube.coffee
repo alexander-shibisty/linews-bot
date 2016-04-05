@@ -36,15 +36,15 @@ module.exports = (req, res) ->
 										if err
 											return toLog "YT Error: #{err}"
 
-										json = if typeof body == "object" then body else JSON.parse body
+										json  = if typeof body == "object" then body else JSON.parse body
 										items = json.items || []
 
 										videoId = if items[0] then items[0].id.videoId    else null
 										title   = if items[0] then items[0].snippet.title else null
 
 										if videoId && title
-											item = []
-											item['id'] = videoId
+											item         = []
+											item['id']   = videoId
 											item['name'] = encodeURIComponent("#{title}")
 
 											callback null, item
@@ -92,16 +92,16 @@ module.exports = (req, res) ->
 									if error then "Error in update: #{error}"
 							)
 
-							if(error)
+							if error
 								error = if typeof error == 'object' then JSON.stringify error else error
 								return toLog "Error in last callback: #{error}"
 							else if result && result.length >= 2
 								item = result[0] || []
 								data = result[1] || []
 
-								id       = item['id'] || null
+								id       = item['id']             || null
 								owner_id = data.response.owner_id || null
-								vid      = data.response.vid || null
+								vid      = data.response.vid      || null
 
 								ins_query  = "INSERT INTO #{config.database.youtube_published_table} (date, link) "
 								ins_query += "VALUES($date, $link)"
@@ -110,7 +110,7 @@ module.exports = (req, res) ->
 									db.run(
 										ins_query
 										$date: date
-										$link: "https://www.youtube.com/watch?v=#{item['id']}"
+										$link: "https://www.youtube.com/watch?v=#{id}"
 										(error) ->
 											#do db.close
 											if error then toLog "Error in insert: #{error}"
