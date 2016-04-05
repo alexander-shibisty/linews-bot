@@ -34,15 +34,14 @@ module.exports = (req, res) ->
 										posts = []
 
 										for post in json.response
-											if typeof post == 'object' && !post.is_pinned && post.text == '' && post.attachment
-												item = post.attachment
+											if typeof post == 'object' && !post.is_pinned && post.text == '' && post.attachments && post.attachments.length == 1
+												item = if post.attachments[0] then post.attachments[0] else {}
 
 												if item.type == 'photo' && item.photo.pid && item.photo.owner_id
 													posts.push
 														image: "photo#{item.photo.owner_id}_#{item.photo.pid}"
 
 										callback null, posts
-
 								)
 							(posts, callback) ->
 								unless posts.length then return toLog "Недостаточно данных", []

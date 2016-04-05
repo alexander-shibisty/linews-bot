@@ -53,7 +53,7 @@ module.exports = (req, res) ->
 					if result.length
 						db.get(
 							"SELECT post_id FROM published WHERE post_id = $post_id LIMIT 1"
-							$post_id: result.id
+							$post_id: result[0].id
 							(error, row) ->
 								if !error && !row
 									callback null, result

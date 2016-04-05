@@ -45,7 +45,7 @@ module.exports = (req, res) ->
 										if videoId && title
 											item = []
 											item['id'] = videoId
-											item['name'] = encodeURIComponent(title)
+											item['name'] = encodeURIComponent("#{title}")
 
 											callback null, item
 										else
@@ -58,12 +58,18 @@ module.exports = (req, res) ->
 									"SELECT rowid AS id, link FROM #{config.database.youtube_published_table} WHERE link = $link"
 									$link: "https://www.youtube.com/watch?v=#{item['id']}"
 									(error, row) ->
+										if error
+											return callback "Ошибка запроса, #{error}", null
+
+										if row
+											return callback "Вероятно, пост уже был", null
+
 										if !row && !error
 											uploadVideo(
 												item
 												(error, data) ->
 													if error
-														return callback "Не удалась загрузка. #{data.error}", null
+														return callback "Не удалась загрузка. #{error}", null
 
 													response = []
 													response.push item
@@ -71,11 +77,9 @@ module.exports = (req, res) ->
 
 													callback null, response
 											)
-										else if error
-											callback "Ошибка запроса, #{error}", null
-										else
-											callback "Вероятно, пост уже был", null
 								)
+
+								return
 						]
 						(error, result) ->
 							date = (new Date()).getTime()
@@ -89,7 +93,7 @@ module.exports = (req, res) ->
 							)
 
 							if(error)
-								#do db.close
+								error = if typeof error == 'object' then JSON.stringify error else error
 								return toLog "Error in last callback: #{error}"
 							else if result && result.length >= 2
 								item = result[0] || []
@@ -112,7 +116,8 @@ module.exports = (req, res) ->
 											if error then toLog "Error in insert: #{error}"
 									)
 
-									str = "#{item['name']}\n #lnGames"
+									last = encodeURIComponent("\n #lnGames@linewson #BotArseny@linewson")
+									str  = "#{item['name']}#{last}"
 									#str = encodeURIComponent str
 									last_url  = "https://api.vk.com/method/wall.post"
 									last_url += "?access_token=#{config.common.vk_token}"

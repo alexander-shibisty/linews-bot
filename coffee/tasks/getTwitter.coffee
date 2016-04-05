@@ -76,7 +76,7 @@ module.exports = (req, res) ->
 							(tweet, callback) ->
 								unless typeof tweet == "object" then return callback "Нет данных от API 2", []
 
-								text = if tweet.text then "#{tweet.text}\n\n#lnGames" else "#lnGames"
+								text = if tweet.text then "#{tweet.text}\n\n#lnGames@linewson #BotArseny@linewson" else "#lnGames@linewson #BotArseny@linewson"
 								text = encodeURIComponent text
 
 								response =
