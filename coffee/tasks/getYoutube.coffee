@@ -100,13 +100,8 @@ module.exports = (req, res) ->
 								data = result[1] || []
 
 								id       = item['id']             || null
-								owner_id = data.response.owner_id || null
-								vid      = data.response.vid      || null
 
-								ins_query  = "INSERT INTO #{config.database.youtube_published_table} (date, link) "
-								ins_query += "VALUES($date, $link)"
-
-								if id && owner_id && vid
+								if id
 									db.run(
 										ins_query
 										$date: date
@@ -116,6 +111,13 @@ module.exports = (req, res) ->
 											if error then toLog "Error in insert: #{error}"
 									)
 
+								owner_id = data.response.owner_id || null
+								vid      = data.response.vid      || null
+
+								ins_query  = "INSERT INTO #{config.database.youtube_published_table} (date, link) "
+								ins_query += "VALUES($date, $link)"
+
+								if id && owner_id && vid
 									last = encodeURIComponent("\n #lnGames@linewson #BotArseny@linewson")
 									str  = "#{item['name']}#{last}"
 									#str = encodeURIComponent str
