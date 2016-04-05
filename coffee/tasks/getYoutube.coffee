@@ -119,7 +119,7 @@ module.exports = (req, res) ->
 								vid      = data.response.vid      || null
 
 								if id && owner_id && vid
-									last = encodeURIComponent("\n #lnGames@linewson #BotArseny@linewson")
+									last = encodeURIComponent("\n\n #lnGames@linewson #BotArseny@linewson")
 									str  = "#{item['name']}#{last}"
 									#str = encodeURIComponent str
 									last_url  = "https://api.vk.com/method/wall.post"
