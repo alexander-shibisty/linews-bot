@@ -91,12 +91,13 @@ module.exports = (req, res) ->
 
 				post += "Получить можно по ссылке: #{item.link}\n\n"
 
+			post += "Информация от сайта http://rupy.info\n\n"
 			post += "#lnGames@linewson #BotArseny@linewson"
 			post  = encodeURIComponent post
 
 			last_url = "https://api.vk.com/method/wall.post"
 			last_url += "?owner_id=-#{config.common.group_id}"
-			last_url += "&attachments=#{attachments}https://steampowered.com/"
+			last_url += "&attachments=#{attachments}http://rupy.info"
 			last_url += "&message=#{post}"
 			last_url += "&from_group=1"
 			last_url += "&access_token=#{config.common.vk_token}"
