@@ -5,6 +5,7 @@ async           = require "async"
 Twitter         = require 'twitter'
 log             = require "../helpers/logs"
 uploadImageInVk = require "../helpers/uploadImageInVkByUrl"
+sleep           = require "../helpers/sleep"
 
 db              = new sqlite3.Database("#{__dirname}/../config/twitter.db")
 
@@ -17,7 +18,7 @@ module.exports = (req, res) ->
 		#db.run("CREATE TABLE published (id, post_id, user_name, date)");
 		db.each(
 			"SELECT rowid AS id, user_name FROM #{config.twitter.database.accounts_table} ORDER BY date ASC LIMIT $limit"
-			$limit: 1
+			$limit: 3
 			(error, row) ->
 				if error
 					return toLog "SQLite Error: #{error}"
@@ -158,6 +159,8 @@ module.exports = (req, res) ->
 										)
 								)
 					)
+
+				sleep.sleep 60, -> toLog "Итерация готова!"
 		)
 
 		do res.end

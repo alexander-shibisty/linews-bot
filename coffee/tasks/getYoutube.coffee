@@ -5,6 +5,7 @@ sqlite3     = do require("sqlite3").verbose
 uploadVideo = require "../helpers/uploadVideoInVkByUrl"
 async       = require "async"
 db          = new sqlite3.Database("#{__dirname}/../config/youtube.db")
+sleep       = require "../helpers/sleep"
 
 toLog       = (data) -> log.writeTo "logs/youtube.log", data
 
@@ -16,7 +17,7 @@ module.exports = (req, res) ->
 		#db.run("CREATE TABLE published (id, video_link, date)");
 		db.each(
 			"SELECT rowid AS id, link FROM #{config.database.youtube_channels_table} ORDER BY date ASC LIMIT $limit"
-			$limit: 1
+			$limit: 3
 			(error, row) ->
 				if error then toLog "SQLite Error: #{error}"
 
@@ -139,6 +140,8 @@ module.exports = (req, res) ->
 							else
 								return toLog "Что-то пошло не так"
 					)
+
+				sleep.sleep 60, -> toLog "Итерация готова!"
 		)
 	)
 
