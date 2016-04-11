@@ -3,6 +3,7 @@ config  = require "config"
 sqlite3 = do require("sqlite3").verbose
 async   = require "async"
 log     = require "../helpers/logs"
+sleep   = require "../helpers/sleep"
 
 db      = new sqlite3.Database("#{__dirname}/../config/alligator.db")
 
@@ -12,7 +13,7 @@ module.exports = (req, res) ->
 	db.serialize( ->
 		db.each(
 			"SELECT rowid AS id, domain FROM #{config.alligator.database.groups_table} ORDER BY date ASC LIMIT $limit"
-			$limit: 1
+			$limit: 3
 			(error, row) ->
 				if error then return toLog "Ошибка запроса к db: #{error}"
 				unless row.domain then return toLog "Нет необходимого параметра"
@@ -168,6 +169,8 @@ module.exports = (req, res) ->
 									toLog "Сбор завершен"
 							)
 					)
+
+				sleep.sleep 60, -> toLog "Итерация готова!"
 		)
 	)
 
