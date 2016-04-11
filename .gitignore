@@ -7,3 +7,4 @@ default.json
 node_modules
 *.db
 *.log
+*.tar
