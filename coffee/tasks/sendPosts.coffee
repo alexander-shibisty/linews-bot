@@ -41,12 +41,14 @@ module.exports = (req, res) ->
 								request(
 									post_url,
 									(err, head, body) ->
-										if err then return toLog "Ошибка в запросе к API: #{err}"
+										if err then return callback "Ошибка в запросе к API: #{err}", []
 
 										callback null, body
 								)
 						]
 						(error, result) ->
+							if error then return "Ошибка в результате: #{error}"
+							
 							db.run(
 								"UPDATE #{posts} SET published = $published WHERE post = $post"
 								$published: '1'
