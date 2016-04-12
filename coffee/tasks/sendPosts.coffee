@@ -48,7 +48,7 @@ module.exports = (req, res) ->
 						]
 						(error, result) ->
 							if error then return "Ошибка в результате: #{error}"
-							
+
 							db.run(
 								"UPDATE #{posts} SET published = $published WHERE post = $post"
 								$published: '1'
