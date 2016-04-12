@@ -13,7 +13,7 @@ module.exports = (req, res) ->
 	posts = config.alligator.database.posts_table
 	query  = "SELECT rowid AS id, post "
 	query += "FROM #{posts} "
-	query += "WHERE published ISNULL OR published = '' "
+	query += "WHERE published ISNULL "
 	query += "ORDER BY RANDOM() "
 	query += "LIMIT $limit"
 
