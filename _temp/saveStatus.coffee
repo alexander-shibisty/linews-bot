@@ -1,75 +1,61 @@
-#db.run "DROP TABLE #{config.database.statuses_table}"
-# db.run "CREATE TABLE #{config.database.statuses_table} (status TEXT, date TEXT)"
-#
-# stmt = db.prepare "INSERT INTO #{config.database.statuses_table} VALUES (?, ?)"
-# stmt.run "Этого числа, в 1995, появились Герои Меча и Магии", "31.08"
-# stmt.run "В этот день, в 1998, вышла Half Life", "8.11"
-# stmt.run "В этот день, 1997 года, вышел Fallout", "30.9"
-# stmt.run "В этот день, 2007 года, Portal", "10.10"
-# stmt.run "В этот день, в 1996, появилась Neverhood", "19.9"
-# stmt.run "В этот день, в 1993, вышел DOOM", "10.12"
-# stmt.run "В этот день, в 1991, вышла Civilization", "15.10"
-# stmt.run "В этот день, в 1998, вышел Star Craft", "31.3"
-# stmt.run "В этот день, в 2002, вышли Космические рейнджеры", "23.12"
-# stmt.run "В этот день, в 1994, вышел Warcraft", "15.1"
-# stmt.run "В этот день, в 1996, вышла Diablo", "30.11"
-# stmt.run "В этот день, в 1996, вышел Duke Nukem 3D", "29.1"
-# stmt.run "В этот день, в 2002, вышел Morrowind", "1.5"
-# stmt.run "В этот день, в 1993, вышла X-COM UFO Defense", "31.12"
-# stmt.run "В этот день, в 2000, вышел Counter Strike", "8.11"
-# stmt.run "В этот день, в 1997, вышел Carmageddon", "30.6"
-# stmt.run "В этот день, в 1997, вышел Full Throttle", "30.6"
-# stmt.run "В этот день, в 1997, вышла Age of Empires", "26.10"
-# stmt.run "В этот день, в 1996, вышел Red Alert", "22.11"
-# stmt.run "В этот день, в 2001, вышел Max Payne", "24.7"
-# stmt.run "В этот день, в 2001, вышли Казаки", "12.4"
-# stmt.run "В этот день, в 1984, появился Тетрис", "6.6"
-# stmt.run "В этот день, в 2002, вышла Mafia", "28.8"
-# stmt.run "В этот день, в 1996, вышел Quake", "22.6"
-# stmt.run "В этот день, в 1994, вышел Need for Speed", "10.9"
-# stmt.run "В этот день, в 2014, вышел Dungeon keeper", "29.1"
-# stmt.run "В этот день, в 1999, вышел Unreal Tournament", "30.11"
-# stmt.run "В этот день, в 2001, вышел Return to Castle Wolfenstein", "20.11"
-# stmt.run "В этот день, в 2000, вышел Deus Ex", "22.6"
-# stmt.run "В этот день, в 1989, вышла Simcity", "1.1"
-# stmt.run "В этот день, в 2001, вышла Black & White", "25.3"
-# stmt.run "В этот день, в 2001, вышла Arcanum", "21.8"
-# stmt.run "В этот день, в 1996, вышла Settlers II" -  "31.8"
-# stmt.run "В этот день, в 2007, вышел S.T.A.L.K.E.R.", "20.3"
-# stmt.run "В этот день, в 2001, вышел Serious Sam", "20.3"
-# stmt.run "В этот день, в 2000, вышел Hitman", "19.11"
-# stmt.run "В этот день, в 2011, вышел Minecraft", "18.11"
-# stmt.run "В этот день, в 2002, вышла Syberia", "9.1"
-# stmt.run "В этот день, в 1995, вышла Descent", "28.2"
-# stmt.run "В этот день, в 2001, вышла Stronghold", "21.10"
-# stmt.run "В этот день, в 2008, вышел Braid", "6.8"
-# stmt.run "В этот день, в 1997, вышла Grand Theft Auto", "8.11"
-# stmt.run "В этот день, в 1999, вышли Аллоды II: Повелитель душ", "вышла 31.7"
-# stmt.run "В этот день, в 2001, вышла Gothic", "15.3"
-# stmt.run "В этот день, в 1996, вышла Blood", "14.2"
-# stmt.run "В этот день, в 1999, вышла Planescape: Torment "- "12.12"
-# stmt.run "В этот день, в 2005, вышла Fahrenheit", "16.9"
-# stmt.run "В этот день, в 1983, вышел Bomber Man", "28.4"
-# stmt.run "В этот день, в 2007, вышел Mass effect", "20.11"
-# stmt.run "В этот день, в 2002, вышел Neverwinter nights", "18.6"
-# stmt.run "В этот день, в 1991, вышел Sonic the Hedgehog", "23.6"
-# stmt.run "В этот день, в 2009, вышла Plants vs Zombies", "5.5"
-# stmt.run "В этот день, в 1993, вышла Myst", "24.9"
-# stmt.run "В этот день, в 1994, вышла Earthworm Jim", "12.10"
-# stmt.run "В этот день, в 2009, вышла Машинариум", "16.10"
-# stmt.run "В этот день, в 1999, вышла Disciples", "27.9"
-# stmt.run "В этот день, в 1999, вышла American McGee’s Alice", "13.8"
-# stmt.run "В этот день, в 1998, вышел Grim Fandango", "30.10"
-# stmt.run "В этот день, в 1995, вышел Terminal Velocity", "1.5"
-# stmt.run "В этот день, в 2001, вышел Oni", "29.1"
-# stmt.run "В этот день, в 2000, вышла Total War", "14.6"
-# stmt.run "В этот день, в 1998, вышла Knights and Merchants", "1.10"
-# stmt.run "В этот день, в 1997, вышла Total Annihilation", "25.9"
-# stmt.run "В этот день, в 2008, вышла Mirror's Edge", "12.11"
-# stmt.run "В этот день, в 1996, вышла Tomb Raider", "15.11"
-# stmt.run "В этот день, в 2003, вышла Command & Conquer: Generals", "14.2"
-# stmt.run "В этот день, в 1998, вышли Вангеры", "19.6"
-# stmt.run "В этот день, в 2000, вышла No One Lives Forever", "9.11"
-# stmt.run "В этот день, в 1999, вышел Silent Hill", "31.1"
-#
-# do stmt.finalize
+###
+01.01.1989 вышла Simcity	                1.1
+09.01.2002 вышла Syberia	                9.1
+15.01.1994 вышел Warcraft	                15.1
+29.01.1996 вышел Duke Nukem 3D	            29.1
+
+14.02 - день рождения YouTube	            14.2
+28.02.1995 вышла Descent	                28.2
+
+15.03.2001 вышла Gothic	                    15.3
+20.03.2007 вышел S.T.A.L.K.E.R.	            20.3
+25.03.2001 вышла Black & White	            25.3
+31.03.1998 вышел Star Craft	                31.3
+
+01.04.1976 была основана Apple              1.4
+04.04.1975 была основана Microsoft          4.4
+12.04 День космонавтики                     12.4
+28.04.1983 вышел Bomber Man	                28.4
+
+01.05.2002 вышел Morrowind	                1.5
+05.05.2009 вышла Plants vs Zombies	        5.5
+
+06.06.1984 появился Тетрис	                6.6
+18.06.2002 вышел Neverwinter nights         8.6
+22.06.1996 вышел Quake	                    22.6
+23.06.1991 вышел Sonic the Hedgehog         23.6
+30.06.1997 вышел Full Throttle	            30.6
+
+24.07.2001 вышел Max Payne	                24.7
+31.07.1999 вышли Аллоды II: Повелитель душ	31.7
+
+06.08.2008 вышел Braid	                    6.8
+21.08.2001 вышел Arcanum	                21.8
+24.08.1996 была основана Valve              24.8
+28.08.2002 вышла Mafia	                    28.8
+
+04.09.1998 был основан Google               4.9
+10.09.1994 вышел Need for Speed	            10.9
+12.09.2003 появился Steam                   12.9
+16.09.2005 вышла Fahrenheit	                16.9
+19.09.1996 появилась Neverhood	            19.9
+30.09.1997 вышел Fallout	                30.9
+
+10.10.2007 вышел Portal	                    10.10
+15.10.1991 вышла Civilization	            15.10
+21.10.2001 вышла Stronghold	                21.10
+26.10.1997 вышла Age of Empires	            26.10
+28.10 - День рождения Билла Гейтса          28.10
+
+03.11 - день рождения Гейба Ньюэлла         3.11
+08.11.1998 вышла Half Life	                8.11
+18.11.2011 вышел Minecraft	                18.11
+19.11.2000 вышел Hitman	                    19.11
+20.11.2007 вышел Mass effect	            20.11
+22.11.1996 вышел Red Alert	                22.11
+30.11.1996 вышла Diablo	                    30.11
+
+10.12.1993 вышел DOOM	                    10.12
+23.12.2002 вышли Космические рейнджеры	    23.12
+31.12.1993 вышла X-COM UFO Defense	        31.12
+###
