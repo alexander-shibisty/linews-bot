@@ -18,9 +18,11 @@ module.exports = (req, res) ->
 			"SELECT rowid AS id, channel_id FROM #{accountsTable} ORDER BY date ASC LIMIT $limit"
 			$limit: 3
 			(error, row) ->
-				if error then return toLog "SQLite Error: #{error}"
+				if error
+					return toLog "SQLite Error: #{error}"
 
-				unless row.id then return toLog "Аккаунты не найдены"
+				unless row.id
+					return toLog "Аккаунты не найдены"
 
 				async.waterfall(
 					[
@@ -30,7 +32,7 @@ module.exports = (req, res) ->
 								$id: row.channel_id
 								(error, item) ->
 									if error then return callback "Ошибка запроса: #{error}", null
-									console.log
+
 									list_id = if item then item.post_id else 0
 									callback null, list_id
 							)
@@ -110,7 +112,7 @@ module.exports = (req, res) ->
 						if row
 							channel_id = row.channel_id		    || null
 
-						if upload && upload.response[0]
+						if upload && upload.response && upload.response.length && upload.response[0]
 							pid		   = upload.response[0].pid || null
 
 						if channel_id
