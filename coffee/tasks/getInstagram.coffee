@@ -10,10 +10,12 @@ sleep           = require "../helpers/sleep"
 toLog		   = (data) -> log.writeTo "logs/instagram.log", data
 
 module.exports = (req, res) ->
+	accountsTable  = config.database.instagram_accounts
+	publishedTable = config.database.instagram_published
 
 	db.serialize( ->
 		db.each(
-			"SELECT rowid AS id, channel_id FROM #{config.database.instagram_accounts} ORDER BY date ASC LIMIT $limit"
+			"SELECT rowid AS id, channel_id FROM #{accountsTable} ORDER BY date ASC LIMIT $limit"
 			$limit: 3
 			(error, row) ->
 				if error then return toLog "SQLite Error: #{error}"
@@ -24,7 +26,8 @@ module.exports = (req, res) ->
 					[
 						(callback) ->
 							db.get(
-								"SELECT post_id FROM published WHERE channel_id = #{row.channel_id} ORDER BY date LIMIT 1"
+								"SELECT post_id FROM #{publishedTable} WHERE channel_id = $id ORDER BY date LIMIT 1"
+								$id: row.channel_id
 								(error, item) ->
 									if error then return callback "Ошибка запроса: #{error}", null
 									console.log
@@ -60,7 +63,7 @@ module.exports = (req, res) ->
 
 							if result[0] && result[0].id
 								db.get(
-									"SELECT link FROM #{config.database.instagram_published} WHERE post_id = $post_id LIMIT 1"
+									"SELECT link FROM #{publishedTable} WHERE post_id = $post_id LIMIT 1"
 									$post_id: result[0].id
 									(error, item) ->
 
@@ -112,14 +115,14 @@ module.exports = (req, res) ->
 
 						if channel_id
 							db.run(
-								"UPDATE #{config.database.instagram_accounts} SET date = $date WHERE channel_id = $channel_id"
+								"UPDATE #{accountsTable} SET date = $date WHERE channel_id = $channel_id"
 								$date: date
 								$channel_id: channel_id
 								(error) ->
 									if error then "Error in update: #{error}"
 							)
 
-						ins_query  = "INSERT INTO #{config.database.instagram_published} (date, link, post_id, channel_id) "
+						ins_query  = "INSERT INTO #{publishedTable} (date, link, post_id, channel_id) "
 						ins_query += "VALUES($date, $link, $post_id, $channel_id)"
 						if image && id && username && channel_id && pid
 							db.run(

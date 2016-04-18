@@ -11,8 +11,7 @@ getInstagram = require './tasks/getInstagram'
 getTwitter   = require './tasks/getTwitter'
 getPosts     = require './tasks/getPosts'
 sendPosts    = require './tasks/sendPosts'
-DeAnna       = require './tasks/DeAnna'
-killCaptcha  = require './tasks/killCaptcha'
+getCosplays  = require './tasks/getCosplays'
 
 #init routes
 app.get '/',             (req, res) -> getToken     req, res
@@ -23,8 +22,7 @@ app.get '/getinstagram', (req, res) -> getInstagram req, res
 app.get '/gettwitter',   (req, res) -> getTwitter   req, res
 app.get '/getposts',     (req, res) -> getPosts     req, res
 app.get '/sendposts',    (req, res) -> sendPosts    req, res
-app.get '/deanna',       (req, res) -> DeAnna       req, res
-app.get '/killcaptcha',  (req, res) -> killCaptcha  req, res
+app.get '/deanna',       (req, res) -> getCosplays  req, res
 
 #last route
 app.get '*', (req, res) -> res.status(404).send 'error 404'

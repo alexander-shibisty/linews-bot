@@ -9,13 +9,14 @@ db              = new sqlite3.Database("#{__dirname}/../config/DeAnna.db")
 toLog   = (data) -> log.writeTo "logs/DeAnna.log", data
 
 module.exports = (req, res) ->
+	publishedTable = config.database.DeAnna_published_table
 
 	db.serialize( ->
 		async.waterfall(
 			[
 				(callback) ->
 					db.get(
-						"SELECT post_id FROM published ORDER BY date LIMIT 1"
+						"SELECT post_id FROM #{publishedTable} ORDER BY date LIMIT 1"
 						(error, row) ->
 							if error then return callback "Ошибка запроса: #{error}", null
 
@@ -52,7 +53,7 @@ module.exports = (req, res) ->
 				(result, callback) ->
 					if result.length
 						db.get(
-							"SELECT post_id FROM published WHERE post_id = $post_id LIMIT 1"
+							"SELECT post_id FROM #{publishedTable} WHERE post_id = $post_id LIMIT 1"
 							$post_id: result[0].id
 							(error, row) ->
 								if !error && !row
@@ -85,13 +86,10 @@ module.exports = (req, res) ->
 			]
 			(error, result, upload) ->
 				if error
-					#do db.close
 					return toLog "Error: #{error}"
 				unless result.length
-					#do db.close
 					return toLog "Нет данных результата"
 				unless upload
-					#do db.close
 					return toLog "Нет данных загрузки"
 				unless upload.response
 					return toLog "Нет данных загрузки, ошибка в API"
@@ -102,7 +100,7 @@ module.exports = (req, res) ->
 
 				if link && post_id
 					date = (new Date()).getTime()
-					ins_query  = "INSERT INTO #{config.database.DeAnna_published_table} (date, link, post_id) "
+					ins_query  = "INSERT INTO #{publishedTable} (date, link, post_id) "
 					ins_query += "VALUES($date, $link, $post_id)"
 
 					db.run(
@@ -113,7 +111,7 @@ module.exports = (req, res) ->
 						(error) ->
 							if error then toLog error
 
-							post = "#instagram #DeannaDavis #ItsRainingNeon"
+							post = "#instagram"
 							post = encodeURIComponent post
 
 							post_url = "https://api.vk.com/method/wall.post?"
@@ -128,8 +126,6 @@ module.exports = (req, res) ->
 								(err, head, body) ->
 									toLog body
 							)
-
-							#do db.close
 					)
 		)
 

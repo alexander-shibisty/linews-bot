@@ -4,9 +4,13 @@ async   = require "async"
 log     = require "../helpers/logs"
 
 module.exports = (video, done) ->
+	description = "Источник: #{config.linews.url}\n\n"
+	description = encodeURIComponent description
+
 	save_url  = "https://api.vk.com/method/video.save"
 	save_url += "?access_token=#{config.common.vk_token}"
 	save_url += "&name=#{video['name']}"
+	save_url += "&description=#{description}"
 	save_url += "&wallpost=0"
 	save_url += "&link=https://www.youtube.com/watch?v=#{video['id']}"
 	save_url += "&group_id=#{config.common.group_id}"

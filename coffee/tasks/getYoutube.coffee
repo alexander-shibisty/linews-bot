@@ -11,12 +11,14 @@ toLog       = (data) -> log.writeTo "logs/youtube.log", data
 
 
 module.exports = (req, res) ->
+	channelsTable  = config.database.youtube_channels_table
+	publishedTable = config.database.youtube_published_table
 
 	db.serialize( ->
 		#db.run("CREATE TABLE channels (id, link, date)");
 		#db.run("CREATE TABLE published (id, video_link, date)");
 		db.each(
-			"SELECT rowid AS id, link FROM #{config.database.youtube_channels_table} ORDER BY date ASC LIMIT $limit"
+			"SELECT rowid AS id, link FROM #{channelsTable} ORDER BY date ASC LIMIT $limit"
 			$limit: 3
 			(error, row) ->
 				if error then toLog "SQLite Error: #{error}"
@@ -56,7 +58,7 @@ module.exports = (req, res) ->
 								if !item['id'] || !item['name'] then return callback 'Не хватает данных', null
 
 								db.get(
-									"SELECT rowid AS id, link FROM #{config.database.youtube_published_table} WHERE link = $link"
+									"SELECT rowid AS id, link FROM #{publishedTable} WHERE link = $link"
 									$link: "https://www.youtube.com/watch?v=#{item['id']}"
 									(error, row) ->
 										if error
@@ -87,7 +89,7 @@ module.exports = (req, res) ->
 							date = (new Date()).getTime()
 
 							db.run(
-								"UPDATE #{config.database.youtube_channels_table} SET date = $date WHERE link = $link"
+								"UPDATE #{channelsTable} SET date = $date WHERE link = $link"
 								$date: date
 								$link: row.link
 								(error) ->
@@ -103,7 +105,7 @@ module.exports = (req, res) ->
 
 								id       = item['id']             || null
 
-								ins_query  = "INSERT INTO #{config.database.youtube_published_table} (date, link) "
+								ins_query  = "INSERT INTO #{publishedTable} (date, link) "
 								ins_query += "VALUES($date, $link)"
 
 								if id

@@ -10,9 +10,12 @@ db      = new sqlite3.Database("#{__dirname}/../config/alligator.db")
 toLog   = (data) -> log.writeTo "logs/alligator.log", data
 
 module.exports = (req, res) ->
+	groupsTable = config.alligator.database.groups_table
+	postsTable  = config.alligator.database.posts_table
+
 	db.serialize( ->
 		db.each(
-			"SELECT rowid AS id, domain FROM #{config.alligator.database.groups_table} ORDER BY date ASC LIMIT $limit"
+			"SELECT rowid AS id, domain FROM #{groupsTable} ORDER BY date ASC LIMIT $limit"
 			$limit: 3
 			(error, row) ->
 				if error then return toLog "Ошибка запроса к db: #{error}"
@@ -60,7 +63,7 @@ module.exports = (req, res) ->
 										functions.push(
 											(done) ->
 												db.get(
-													"SELECT rowid FROM #{config.alligator.database.posts_table} WHERE post = $post"
+													"SELECT rowid FROM #{postsTable} WHERE post = $post"
 													$post: global.images[global.count]
 													(error, row) ->
 														if error
@@ -80,7 +83,7 @@ module.exports = (req, res) ->
 										functions.push(
 											(result, done) ->
 												db.get(
-													"SELECT rowid FROM #{config.alligator.database.posts_table} WHERE post = $post"
+													"SELECT rowid FROM #{postsTable} WHERE post = $post"
 													$post: global.images[global.count]
 													(error, row) ->
 														if error
@@ -93,8 +96,6 @@ module.exports = (req, res) ->
 														global.count++
 														done null, true
 												)
-
-
 										)
 
 									count++
@@ -114,7 +115,7 @@ module.exports = (req, res) ->
 
 							date = (new Date()).getTime()
 							db.run(
-								"UPDATE #{config.alligator.database.groups_table} SET date = $date WHERE domain = $domain"
+								"UPDATE #{groupsTable} SET date = $date WHERE domain = $domain"
 								$date: date
 								$domain: domain
 								(error) ->
@@ -133,7 +134,7 @@ module.exports = (req, res) ->
 											date = (new Date()).getTime()
 
 											db.run(
-												"INSERT INTO #{config.alligator.database.posts_table} (date, post) VALUES ($date, $post)"
+												"INSERT INTO #{postsTable} (date, post) VALUES ($date, $post)"
 												$date: date
 												$post: global.images[global.count]
 												(error, row) ->
@@ -149,7 +150,7 @@ module.exports = (req, res) ->
 											date = (new Date()).getTime()
 
 											db.run(
-												"INSERT INTO #{config.alligator.database.posts_table} (date, post) VALUES ($date, $post)"
+												"INSERT INTO #{postsTable} (date, post) VALUES ($date, $post)"
 												$date: date
 												$post: global.images[global.count]
 												(error, row) ->

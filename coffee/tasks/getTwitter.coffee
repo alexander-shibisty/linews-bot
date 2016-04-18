@@ -12,12 +12,14 @@ db              = new sqlite3.Database("#{__dirname}/../config/twitter.db")
 toLog           = (data) -> log.writeTo "logs/twitter.log", data
 
 module.exports = (req, res) ->
+	accountsTable  = config.twitter.database.accounts_table
+	publishedTable = config.twitter.database.published_table
 
 	db.serialize( ->
 		#db.run("CREATE TABLE channels (id, user_name, date)");
 		#db.run("CREATE TABLE published (id, post_id, user_name, date)");
 		db.each(
-			"SELECT rowid AS id, user_name FROM #{config.twitter.database.accounts_table} ORDER BY date ASC LIMIT $limit"
+			"SELECT rowid AS id, user_name FROM #{accountsTable} ORDER BY date ASC LIMIT $limit"
 			$limit: 3
 			(error, row) ->
 				if error
@@ -61,7 +63,7 @@ module.exports = (req, res) ->
 
 								if id
 									db.get(
-										"SELECT rowid AS id, user_name FROM #{config.twitter.database.published_table} WHERE user_name = $user_name AND post_id = $post_id"
+										"SELECT rowid AS id, user_name FROM #{publishedTable} WHERE user_name = $user_name AND post_id = $post_id"
 										$user_name: row.user_name
 										$post_id: tweet.id
 										(error, row) ->
@@ -123,7 +125,7 @@ module.exports = (req, res) ->
 							image = unless result.image == null then result.image else ''
 
 							db.run(
-								"UPDATE #{config.twitter.database.accounts_table} SET date = $date WHERE user_name = $user_name"
+								"UPDATE #{accountsTable} SET date = $date WHERE user_name = $user_name"
 								$date: date
 								$user_name: userName
 								(error) ->
@@ -131,7 +133,7 @@ module.exports = (req, res) ->
 							)
 
 							if text
-								ins_query  = "INSERT INTO #{config.twitter.database.published_table} (date, user_name, post_id) "
+								ins_query  = "INSERT INTO #{publishedTable} (date, user_name, post_id) "
 								ins_query += "VALUES($date, $user_name, $post_id)"
 
 								db.run(
