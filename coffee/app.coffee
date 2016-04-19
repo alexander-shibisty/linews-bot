@@ -22,7 +22,7 @@ app.get '/getinstagram', (req, res) -> getInstagram req, res
 app.get '/gettwitter',   (req, res) -> getTwitter   req, res
 app.get '/getposts',     (req, res) -> getPosts     req, res
 app.get '/sendposts',    (req, res) -> sendPosts    req, res
-app.get '/deanna',       (req, res) -> getCosplays  req, res
+app.get '/getcosplays',  (req, res) -> getCosplays  req, res
 
 #last route
 app.get '*', (req, res) -> res.status(404).send 'error 404'

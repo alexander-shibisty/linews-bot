@@ -15,13 +15,11 @@ module.exports = (req, res) ->
 	query  = "SELECT rowid AS id, post "
 	query += "FROM #{posts} "
 	query += "WHERE published ISNULL "
-	query += "ORDER BY RANDOM() "
-	query += "LIMIT $limit"
+	query += "ORDER BY RANDOM()"
 
 	db.serialize( ->
-		db.each(
+		db.get(
 			query
-			$limit: 1
 			(error, row) ->
 				if error then return toLog "Ошибка запроса к db: #{error}"
 				unless row.post then return toLog "Не найден пост"

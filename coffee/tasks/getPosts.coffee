@@ -49,6 +49,7 @@ module.exports = (req, res) ->
 								)
 							(posts, callback) ->
 								unless posts.length then return toLog "Недостаточно данных", []
+
 								count = 0
 								functions = []
 								global.images = []
