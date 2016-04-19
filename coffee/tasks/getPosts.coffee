@@ -24,6 +24,15 @@ module.exports = (req, res) ->
 				domain = row.domain
 
 				if domain
+					date = (new Date()).getTime()
+					db.run(
+						"UPDATE #{groupsTable} SET date = $date WHERE domain = $domain"
+						$date: date
+						$domain: domain
+						(error) ->
+							if error then "Error in update: #{error}"
+					)
+					
 					async.waterfall(
 						[
 							(callback) ->
@@ -113,15 +122,6 @@ module.exports = (req, res) ->
 								return toLog "Error: #{error}"
 							unless result.length
 								return toLog "Пустой массив"
-
-							date = (new Date()).getTime()
-							db.run(
-								"UPDATE #{groupsTable} SET date = $date WHERE domain = $domain"
-								$date: date
-								$domain: domain
-								(error) ->
-									if error then "Error in update: #{error}"
-							)
 
 							functions = []
 							global.images = result
