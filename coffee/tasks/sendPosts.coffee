@@ -22,7 +22,7 @@ module.exports = (req, res) ->
 			query
 			(error, row) ->
 				if error then return toLog "Ошибка запроса к db: #{error}"
-				unless row.post then return toLog "Не найден пост"
+				unless row then return toLog "Не найден пост"
 
 				post = row.post
 
