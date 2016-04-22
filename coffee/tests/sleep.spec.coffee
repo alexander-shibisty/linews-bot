@@ -6,13 +6,14 @@ describe(
 		it(
 			"Wait 1 second"
 			(done) ->
-				console.log 'sleep...'
+				sleepTime = (new Date()).getTime()
+
 				sleep.sleep(
 					1
 					->
-						console.log 'wakeup'
+						wakeupTime = (new Date()).getTime()
 
-						expect(on).toEqual on
+						expect( ((wakeupTime - sleepTime) >= 1000) ).toEqual on
 						do done
 				)
 		)
