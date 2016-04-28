@@ -138,7 +138,7 @@ module.exports = (req, res) ->
 								(error) ->
 									if error then toLog error
 
-									post = "#instagram"
+									post = "#instagram ##{username}"
 									post = encodeURIComponent post
 
 									post_url = "https://api.vk.com/method/wall.post"
