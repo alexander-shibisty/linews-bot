@@ -13,6 +13,8 @@ getPosts     = require './tasks/getPosts'
 sendPosts    = require './tasks/sendPosts'
 getCosplays  = require './tasks/getCosplays'
 
+eubrimPosts  = require './tasks/eubrimPosts'
+
 #init routes
 app.get '/',             (req, res) -> getToken     req, res
 app.get '/setstatus',    (req, res) -> setStatus    req, res
@@ -23,6 +25,8 @@ app.get '/gettwitter',   (req, res) -> getTwitter   req, res
 app.get '/getposts',     (req, res) -> getPosts     req, res
 app.get '/sendposts',    (req, res) -> sendPosts    req, res
 app.get '/getcosplays',  (req, res) -> getCosplays  req, res
+
+app.get '/eubrim',  (req, res) -> eubrimPosts  req, res
 
 #last route
 app.get '*', (req, res) -> res.status(404).send 'error 404'
