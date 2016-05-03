@@ -5,7 +5,10 @@ https  	= require "https"
 module.exports = (image, newName, callback) ->
 	path = "#{__dirname}/../images/#{newName}"
 
-	if !fs.existsSync path
+	fileExists = fs.existsSync path
+
+	if !fileExists
+
 		file = fs.createWriteStream path
 
 		httpsPattern =
@@ -22,3 +25,4 @@ module.exports = (image, newName, callback) ->
 
 				callback null
 		)
+	else if fileExists then callback null

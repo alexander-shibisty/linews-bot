@@ -1,5 +1,6 @@
 imageDownloader = require "../helpers/downloadImageByUrl"
 sha1 			= require "sha1"
+fs              = require "fs"
 
 describe(
 	"Image download"
