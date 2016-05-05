@@ -10,7 +10,7 @@ log   	        = require "../helpers/logs"
 module.exports = (_image, _params, _done) ->
 	if !_image || typeof _image != 'string'
 		return _done "Переданы не все аргументы", null
-	if !_params || typeof params != 'object'
+	if !_params || typeof _params != 'object'
 		return _done "Переданы не все аргументы", null
 	if !_done || typeof _done != 'function'
 		return _done "Переданы не все аргументы", null
