@@ -14,5 +14,6 @@ module.exports =
 		logger = log4js.getLogger file
 		logger.error data
 	writeTo: (file, data) ->
+		console.log data
 		this.run file
 		this.info file, data

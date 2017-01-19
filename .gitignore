@@ -1,10 +1,6 @@
-/builder/
-/tests/
-/tasks/
-/helpers/
-/images/
-app.js
-default.json
+/built
+/config
+!/config/default.example.json
 node_modules
 *.db
 *.log

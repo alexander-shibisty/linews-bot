@@ -8,7 +8,7 @@ toLog   = (data) -> log.writeTo "logs/status.log", data
 
 module.exports = (req, res) ->
 	statusesTable = config.database.statuses_table
-	db = new sqlite3.Database("#{__dirname}/../config/status.db")
+	db = new sqlite3.Database(__dirname + "/../../config/status.db")
 
 	db.serialize( ->
 		today = do date.toDay
@@ -22,9 +22,9 @@ module.exports = (req, res) ->
 				if row && row.status
 					str = encodeURIComponent row.status
 					url = "https://api.vk.com/method/status.set"
-					url += "?group_id=#{config.common.group_id}"
-					url	+= "&text=#{str}"
-					url	+= "&access_token=#{config.common.vk_token}"
+					url += "?group_id=" + config.common.group_id
+					url	+= "&text=" + str
+					url	+= "&access_token=" + config.common.vk_token
 
 					request(
 						url

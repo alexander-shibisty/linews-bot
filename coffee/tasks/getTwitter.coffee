@@ -7,7 +7,7 @@ log             = require "../helpers/logs"
 uploadImageInVk = require "../helpers/uploadImageInVkByUrl"
 sleep           = require "../helpers/sleep"
 
-db              = new sqlite3.Database("#{__dirname}/../config/twitter.db")
+db              = new sqlite3.Database(__dirname + "/../../config/twitter.db")
 
 toLog           = (data) -> log.writeTo "logs/twitter.log", data
 

@@ -5,7 +5,7 @@ async   = require "async"
 log     = require "../helpers/logs"
 sleep   = require "../helpers/sleep"
 
-db      = new sqlite3.Database("#{__dirname}/../config/alligator.db")
+db      = new sqlite3.Database(__dirname + "/../../config/alligator.db")
 
 toLog   = (data) -> log.writeTo "logs/alligator.log", data
 
